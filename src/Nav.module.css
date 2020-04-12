@@ -29,8 +29,14 @@ nav {
   width: 30%;
 }
 
-.navLinks li {
+.navLinks li,
+.navLinks NavItems {
   list-style: none;
+  text-decoration: none;
+  color: rgb(70, 69, 69);
+  letter-spacing: 3px;
+  font-weight: 400;
+  font-size: 14px;
 }
 
 .navLinks a {
@@ -75,7 +81,8 @@ nav {
     transform: translateX(100%);
     transition: transform 0.5s ease-in;
   }
-  .navLinks li {
+  .navLinks li,
+  .navLinks NavItems {
     opacity: 0;
   }
 
@@ -86,15 +93,4 @@ nav {
 
 nav .navActive {
   transform: translateX(0%);
-}
-
-@keyframes navLinkFade {
-  from {
-    opacity: 0;
-    transform: translate(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0px);
-  }
 }

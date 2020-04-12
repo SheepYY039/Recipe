@@ -1,12 +1,22 @@
 import React, { useState } from "react";
 import style from "./Nav.module.css";
-import NavItems from "./NavItems";
+import NavPrint from "./NavPrint";
 
 const Nav = () => {
+  const isMobile = window.innerWidth < 768;
+  console.log(isMobile);
+
+  const navItems = [
+    { id: 1, name: "Home" },
+    { id: 2, name: "About" },
+    { id: 3, name: "Content" },
+    { id: 4, name: "Contact" },
+  ];
+
   const [isOpened, setIsOpened] = useState(false);
 
   function navSlide(e) {
-    // e.preventDefault();
+    e.preventDefault();
 
     if (isOpened) {
       setIsOpened(false);
@@ -28,7 +38,7 @@ const Nav = () => {
             : style.navLinks
         }
       >
-        <NavItems />
+        <NavPrint navItems={navItems} isMobile={isMobile} />
       </ul>
 
       <div className={style.burger} onClick={navSlide}>
