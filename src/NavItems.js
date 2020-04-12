@@ -16,9 +16,3 @@ const NavItems = ({ name, index }) => {
 };
 
 export default NavItems;
-
-// animation-name: ;
-// animation-duration: "";
-// animation-delay: ;
-// animation-direction: "";
-// animation-timing-function: "";

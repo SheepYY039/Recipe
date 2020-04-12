@@ -1,3 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Oxygen:wght@300;400;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Oxygen", sans-serif;
+}
+
 .recipe {
   width: 390px;
   min-height: 380px;
@@ -12,6 +21,42 @@
   display: flex;
   justify-content: center;
   text-align: center;
+}
+
+.recipe h3 {
+  margin: 2px;
+}
+
+.recipe ol {
+  padding: 15px;
+  height: 80%;
+  counter-reset: i 0;
+  overflow: scroll;
+  list-style-type: none;
+}
+
+.recipe ol li {
+  display: flex;
+  padding: 5px;
+  margin-left: 35px;
+  justify-content: start;
+  text-align: start;
+  background: #e7ffe6;
+}
+
+.recipe ol li:before {
+  content: counter(i);
+  counter-increment: i;
+  padding-right: 0.2em;
+  color: #e7ffe6;
+  left: -30px;
+  position: relative;
+  font-weight: 700;
+  font-size: 1.3em;
+}
+
+.recipe p {
+  margin-top: 10px;
 }
 
 .recipe img {
@@ -51,13 +96,10 @@
 
   overflow: hidden;
   backface-visibility: hidden;
-  /* -webkit-backface-visibility: hidden; */
+
   transition: transform 0.3s linear;
 
   position: absolute;
-  /* top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); */
 }
 
 .recipe .front {
@@ -84,4 +126,5 @@
   color: #2c3e50;
   text-align: center;
   justify-content: center;
+  overflow: scroll;
 }

@@ -4,20 +4,17 @@ import NavPrint from "./NavPrint";
 
 const Nav = () => {
   const isMobile = window.innerWidth < 768;
-  console.log(isMobile);
 
   const navItems = [
     { id: 1, name: "Home" },
     { id: 2, name: "About" },
-    { id: 3, name: "Content" },
+    { id: 3, name: "Recipe" },
     { id: 4, name: "Contact" },
   ];
 
   const [isOpened, setIsOpened] = useState(false);
 
-  function navSlide(e) {
-    e.preventDefault();
-
+  function navSlide() {
     if (isOpened) {
       setIsOpened(false);
     } else {
@@ -41,7 +38,12 @@ const Nav = () => {
         <NavPrint navItems={navItems} isMobile={isMobile} />
       </ul>
 
-      <div className={style.burger} onClick={navSlide}>
+      <div
+        onClick={navSlide}
+        className={
+          isOpened === false ? style.burger : `${style.burger} ${style.toggle}`
+        }
+      >
         <div className={style.line1}></div>
         <div className={style.line2}></div>
         <div className={style.line3}></div>
