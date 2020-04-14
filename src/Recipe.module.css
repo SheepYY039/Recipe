@@ -17,10 +17,33 @@
   justify-content: space-around;
 }
 
-.recipe h1 {
+.recipe .title {
+  display: block;
+  width: 100%;
+  background-color: #6f00ff;
+
+  height: auto;
+
+  overflow: hidden;
+  line-height: 3em;
+  max-height: 3em;
+
+  /* height: 30%;
   display: flex;
   justify-content: center;
+  align-items: center; */
+}
+
+.recipe h1 {
+  display: block;
   text-align: center;
+
+  /* overflow: hidden; */
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+
+  font-size: 30px;
+  font-size: 3vw;
 }
 
 .recipe h3 {
@@ -30,30 +53,44 @@
 
 .recipe ol {
   counter-reset: i 0;
-
   list-style-type: none;
+
+  text-indent: -0.5em;
+
   padding: 0;
   margin: 0;
+  min-height: 100%;
+  align-self: stretch;
 }
 
 .recipe ol li {
-  display: flex;
+  display: block;
   padding: 5px;
+  margin: 9px;
   margin-left: 35px;
-  justify-content: start;
+  padding-right: 20px;
+  /* background-color: #ecfee8; */
+  box-shadow: 1px 2px 10px #78de9e;
+  border-radius: 3px;
+  /* border: 1px inset #92e9b1; */
+
   text-align: left;
-  background: #e7ffe6;
 }
 
 .recipe ol li:before {
+  display: inline-flex;
   content: counter(i);
   counter-increment: i;
-  padding-right: 0.2em;
+
   color: #303e4e;
-  left: -30px;
-  position: relative;
+
+  margin-left: -2em;
+  margin-right: 1.5em;
+
+  text-align: right;
+  direction: rtl;
+  width: 1em;
   font-weight: 700;
-  font-size: 1.3em;
 }
 
 .recipe p {
