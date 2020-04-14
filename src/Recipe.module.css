@@ -27,10 +27,6 @@
   margin: 2px;
   height: 10%;
 }
-/* 
-.recipe Scrollbars {
-  height: 80%;
-} */
 
 .recipe ol {
   counter-reset: i 0;
@@ -53,7 +49,7 @@
   content: counter(i);
   counter-increment: i;
   padding-right: 0.2em;
-  color: #e7ffe6;
+  color: #303e4e;
   left: -30px;
   position: relative;
   font-weight: 700;

@@ -1,9 +1,7 @@
 import React from "react";
 import style from "./Recipe.module.css";
 import Card from "./Card";
-import ShadowScrollBars from "./ShadowScrollBars";
-import SimpleBar from "simplebar-react";
-import "simplebar/dist/simplebar.min.css";
+import CustomScrollBars from "./CustomScrollBars";
 
 import Flippy, { FrontSide, BackSide } from "react-flippy";
 
@@ -31,8 +29,7 @@ const Recipe = ({ title, calories, image, ingredients }) => {
         <BackSide className={`${style.back} ${style.card}`}>
           <div className={style.recipeContent}>
             <h3>Ingredients</h3>
-            <SimpleBar
-              autoHide={true}
+            <div
               style={{
                 height: "80%",
                 width: "90%",
@@ -40,12 +37,16 @@ const Recipe = ({ title, calories, image, ingredients }) => {
                 marginRight: "auto",
               }}
             >
-              <ol>
-                {ingredients.map((ingredient, i) => {
-                  return <li key={[i, "-", ingredient]}>{ingredient.text}</li>;
-                })}
-              </ol>
-            </SimpleBar>
+              <CustomScrollBars>
+                <ol>
+                  {ingredients.map((ingredient, i) => {
+                    return (
+                      <li key={[i, "-", ingredient]}>{ingredient.text}</li>
+                    );
+                  })}
+                </ol>
+              </CustomScrollBars>
+            </div>
             <p>
               Calories: <strong>{calories}</strong> cal
             </p>
