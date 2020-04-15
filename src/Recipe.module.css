@@ -17,33 +17,13 @@
   justify-content: space-around;
 }
 
-.recipe .title {
-  display: block;
-  width: 100%;
-  background-color: #6f00ff;
-
-  height: auto;
-
-  overflow: hidden;
-  line-height: 3em;
-  max-height: 3em;
-
-  /* height: 30%;
-  display: flex;
-  justify-content: center;
-  align-items: center; */
-}
-
-.recipe h1 {
-  display: block;
-  text-align: center;
-
-  /* overflow: hidden; */
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-
-  font-size: 30px;
-  font-size: 3vw;
+.h1Container {
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  padding-top: auto;
+  padding-bottom: auto;
+  /* height: 69px; */
 }
 
 .recipe h3 {
@@ -99,13 +79,17 @@
 }
 
 .recipe img {
-  display: block;
-  border-radius: 50%;
+  display: flex;
+
   object-fit: cover;
   margin-left: auto;
   margin-right: auto;
-  height: 100%;
-  padding-bottom: 10px;
+  height: 70%;
+  margin-top: 15px;
+  padding: 5px;
+
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 5px #72ecac, 0px 0px 0px 10px #a4f6cf;
 }
 
 .card {
