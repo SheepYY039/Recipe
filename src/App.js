@@ -4,13 +4,14 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
-import { Form } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import PopoverStickOnHover from "./PopOver";
 
 import "./App.css";
 import style from "./Modal.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 Modal.setAppElement("#root");
 
@@ -26,7 +27,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
-  const [modalIsOpen, setModalIsOepn] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   let indexOfFirstCard = 0;
   let indexOfLastCard = 10;
@@ -76,32 +77,32 @@ const App = () => {
     {
       name: "Balanced",
       apiName: "balanced",
-      descirption: "Protein/Fat/Carb values in 15/35/50 ratio",
+      description: "Protein/Fat/Carb values in 15/35/50 ratio",
     },
     {
       name: "High-Fiber",
       apiName: "high-fiber",
-      descirption: "More than 5g fiber per serving",
+      description: "More than 5g fiber per serving",
     },
     {
       name: "High-Protein",
       apiName: "high-protein",
-      descirption: "More than 50% of total calories from proteins",
+      description: "More than 50% of total calories from proteins",
     },
     {
       name: "Low-Carb",
       apiName: "low-carb",
-      descirption: "Less than 20% of total calories from carbs",
+      description: "Less than 20% of total calories from carbs",
     },
     {
       name: "Low-Fat",
       apiName: "low-fat",
-      descirption: "Less than 15% of total calories from fat",
+      description: "Less than 15% of total calories from fat",
     },
     {
       name: "Low-Sodium",
       apiName: "low-sodium",
-      descirption: "Less than 140mg Na per serving",
+      description: "Less than 140mg Na per serving",
     },
   ];
 
@@ -109,160 +110,160 @@ const App = () => {
     {
       name: "Alcohol-free",
       apiName: "alcohol-free",
-      descirption: "No alcohol used or contained",
+      description: "No alcohol used or contained",
     },
     {
       name: "Celery-free",
       apiName: "celery-free",
-      descirption: "does not contain celery or derivatives",
+      description: "does not contain celery or derivatives",
     },
     {
-      name: "Crustcean-free",
+      name: "Crustacean-free",
       apiName: "crustacean-free",
-      descirption:
+      description:
         "does not contain crustaceans (shrimp, lobster etc.) or derivatives",
     },
     {
       name: "Dairy",
       apiName: "dairy-free",
-      descirption: "No dairy; no lactose",
+      description: "No dairy; no lactose",
     },
     {
       name: "Eggs",
       apiName: "egg-free",
-      descirption: "No eggs or products containing eggs",
+      description: "No eggs or products containing eggs",
     },
     {
       name: "Fish",
       apiName: "fish-free",
-      descirption: "No fish or fish derivatives",
+      description: "No fish or fish derivatives",
     },
     {
       name: "FODMAP free",
       apiName: "fodmap-free",
-      descirption: "Does not contain FODMAP foods",
+      description: "Does not contain FODMAP foods",
     },
     {
       name: "Gluten",
       apiName: "gluten-free",
-      descirption: "No ingredients containing gluten",
+      description: "No ingredients containing gluten",
     },
     {
       name: "Keto",
       apiName: "keto-friendly",
-      descirption: "Maximum 7 grams of net carbs per serving",
+      description: "Maximum 7 grams of net carbs per serving",
     },
     {
       name: "Kidney friendly",
       apiName: "kidney-friendly",
-      descirption:
+      description:
         "per serving – phosphorus less than 250 mg AND potassium less than 500 mg AND sodium: less than 500 mg",
     },
     {
       name: "Kosher",
       apiName: "kosher",
-      descirption:
+      description:
         "contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves",
     },
     {
       name: "Low potassium",
       apiName: "low-potassium",
-      descirption: "Less than 150mg per serving",
+      description: "Less than 150mg per serving",
     },
     {
       name: "Lupine-free",
       apiName: "lupine-free",
-      descirption: "does not contain lupine or derivatives",
+      description: "does not contain lupine or derivatives",
     },
     {
       name: "Mustard-free",
       apiName: "mustard-free",
-      descirption: "does not contain mustard or derivatives",
+      description: "does not contain mustard or derivatives",
     },
     {
       name: "n/a",
       apiName: "low-fat-abs",
-      descirption: "Less than 3g of fat per serving",
+      description: "Less than 3g of fat per serving",
     },
     {
       name: "No oil added",
       apiName: "No-oil-added",
-      descirption:
+      description:
         "No oil added except to what is contained in the basic ingredients",
     },
     {
       name: "No-sugar",
       apiName: "low-sugar",
-      descirption:
+      description:
         "No simple sugars – glucose, dextrose, galactose, fructose, sucrose, lactose, maltose",
     },
     {
       name: "Paleo",
       apiName: "paleo",
-      descirption:
+      description:
         "Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils",
     },
     {
       name: "Peanuts",
       apiName: "peanut-free",
-      descirption: "No peanuts or products containing peanuts",
+      description: "No peanuts or products containing peanuts",
     },
     {
       name: "Pescatarian",
       apiName: "pecatarian",
-      descirption:
+      description:
         "Does not contain meat or meat based products, can contain dairy and fish",
     },
     {
       name: "Pork-free",
       apiName: "pork-free",
-      descirption: "does not contain pork or derivatives",
+      description: "does not contain pork or derivatives",
     },
     {
       name: "Red meat-free",
       apiName: "red-meat-free",
-      descirption:
+      description:
         "does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.",
     },
     {
       name: "Sesame-free",
       apiName: "sesame-free",
-      descirption: "does not contain sesame seed or derivatives",
+      description: "does not contain sesame seed or derivatives",
     },
     {
       name: "Shellfish",
       apiName: "shellfish-free",
-      descirption: "No shellfish or shellfish derivatives",
+      description: "No shellfish or shellfish derivatives",
     },
     {
       name: "Soy",
       apiName: "soy-free",
-      descirption: "No soy or products containing soy",
+      description: "No soy or products containing soy",
     },
     {
       name: "Sugar-conscious",
       apiName: "sugar-conscious",
-      descirption: "Less than 4g of sugar per serving",
+      description: "Less than 4g of sugar per serving",
     },
     {
       name: "Tree Nuts",
       apiName: "tree-nut-free",
-      descirption: "No tree nuts or products containing tree nuts",
+      description: "No tree nuts or products containing tree nuts",
     },
     {
       name: "Vegan",
       apiName: "vegan",
-      descirption: "No meat, poultry, fish, dairy, eggs or honey",
+      description: "No meat, poultry, fish, dairy, eggs or honey",
     },
     {
       name: "Vegetarian",
       apiName: "vegetarian",
-      descirption: "No meat, poultry, or fish",
+      description: "No meat, poultry, or fish",
     },
     {
       name: "Wheat-free",
       apiName: "wheat-free",
-      descirption: "No wheat, can have gluten though",
+      description: "No wheat, can have gluten though",
     },
   ];
   const [searchRange, setSearchRange] = useState("&from=0&to=10");
@@ -319,6 +320,14 @@ const App = () => {
     }
   };
 
+  const getAdvancedSearch = (e) => {
+    e.preventDefault();
+    if (!(search === "" || search === " ")) {
+      setQuery(search);
+      setSearch("");
+    }
+  };
+
   if (isHovered) {
     inputClass = "search-bar-expand search-bar";
     buttonClass = "search-button search-button-expand";
@@ -353,7 +362,7 @@ const App = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </form>
-        <button onClick={() => setModalIsOepn(true)}>Advanced Search</button>
+        <button onClick={() => setModalIsOpen(true)}>Advanced Search</button>
       </div>
 
       <div className="recipes">
@@ -379,19 +388,22 @@ const App = () => {
 
       <Modal
         isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOepn(false)}
+        onRequestClose={() => setModalIsOpen(false)}
         style={{ overlay: { backgroundColor: "rgba(0,0,0,0.7)" } }}
       >
-        <div className="ModalHeader" style={{ dislay: "flex" }}>
+        <div className="ModalHeader" style={{ display: "flex" }}>
           <h2>Advanced Search</h2>
         </div>
         <div className="ModalContent">
-          <Form>
-            <Form.Group controlId="exampleForm.ControlInput1">
-              <Form.Label>Serch: </Form.Label>
+          <Form onSubmit={getAdvancedSearch} className="advanced-search-form">
+            {/* Search Starts Here */}
+            <Form.Group controlId="Search">
+              <Form.Label>Search: </Form.Label>
               <Form.Control type="text" placeholder="Chicken" />
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
+            {/* Search Ends Here */}
+            {/* No. of Items Starts Here */}
+            <Form.Group controlId="NoOfItems">
               <Form.Label>Number of Items Per Page</Form.Label>
               <Form.Control as="select">
                 <option>10</option>
@@ -401,7 +413,9 @@ const App = () => {
                 <option>30</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
+            {/* No. of Items Ends Here */}
+            {/* Meal Type Starts Here */}
+            <Form.Group controlId="MealType">
               <Form.Label>Meal Type: </Form.Label>
               <Form.Control as="select">
                 <option>Breakfast</option>
@@ -410,15 +424,24 @@ const App = () => {
                 <option>Snack</option>
               </Form.Control>
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
-              <Form.Label>Dish Types</Form.Label>
-              <Form.Control as="select">
-                {dishTypes.map((dishType) => (
-                  <option>{dishType}</option>
+            <Form.Group controlId="DishType">
+              <Form.Label>Dish Type</Form.Label>
+              <div className="mb-3">
+                {dishTypes.map((dishType, index) => (
+                  <div style={{ display: "inline-flex" }}>
+                    <Form.Check
+                      inline
+                      label={`${dishType} `}
+                      type="checkbox"
+                      id={`inline-${dishType}-${index}`}
+                    />
+                  </div>
                 ))}
-              </Form.Control>
+              </div>
             </Form.Group>
-            <Form.Group controlId="exampleForm.ControlSelect1">
+            {/* Meal Type Ends Here */}
+            {/* Cuisine Type Starts Here */}
+            <Form.Group controlId="CuisineType">
               <Form.Label>Cuisine Types</Form.Label>
               <Form.Control as="select">
                 {cuisineTypes.map((cuisineType) => (
@@ -426,40 +449,66 @@ const App = () => {
                 ))}
               </Form.Control>
             </Form.Group>
-
-            <Form.Group controlId="exampleForm.ControlSelect2">
-              <Form.Label>Diet</Form.Label>
-
-              <div className="mb-3">
-                {dietLabels.map((dietLabel, index) => (
-                  <Form.Check
-                    inline
-                    label={dietLabel.name}
-                    type="checkbox"
-                    id={`inline-${dietLabel.name}-${index}`}
-                  />
-                ))}
-              </div>
-            </Form.Group>
-
-            <Form.Group controlId="exampleForm.ControlSelect2">
+            {/* CuisineType Ends Here */}
+            {/* Diet Starts Here */}
+            <fieldset>
+              <Form.Group controlId="Diet">
+                <Form.Label>Diet</Form.Label>
+                <div className="mb-3">
+                  {dietLabels.map((dietLabel, index) => (
+                    <PopoverStickOnHover
+                      component={<div>{`${dietLabel.description}`}</div>}
+                      placement="top"
+                      onMouseEnter={() => {}}
+                      delay={200}
+                    >
+                      <div style={{ display: "inline-flex" }}>
+                        <Form.Check
+                          inline
+                          label={`${dietLabel.name} `}
+                          type="radio"
+                          name="formHorizontalRadios"
+                          id={`inline-${dietLabel.name}-${index}`}
+                        />
+                      </div>
+                    </PopoverStickOnHover>
+                  ))}
+                </div>
+              </Form.Group>
+            </fieldset>
+            {/* Diet ENds Here */}
+            {/* Health Labels Starts Here */}
+            <Form.Group controlId="HealthLabel">
               <Form.Label>Health Labels</Form.Label>
-              {/* {//TODO work on hover for description } */}
               <div className="mb-3">
                 {healthLabels.map((healthLabel, index) => (
-                  <Form.Check
-                    inline
-                    label={`${healthLabel.name} `}
-                    type="checkbox"
-                    id={`inline-${healthLabel.name}-${index}`}
-                  />
+                  <PopoverStickOnHover
+                    component={<div>{`${healthLabel.description}`}</div>}
+                    placement="top"
+                    onMouseEnter={() => {}}
+                    delay={200}
+                  >
+                    <div style={{ display: "inline-flex" }}>
+                      <Form.Check
+                        inline
+                        label={`${healthLabel.name} `}
+                        type="checkbox"
+                        id={`inline-${healthLabel.name}-${index}`}
+                      />
+                    </div>
+                  </PopoverStickOnHover>
                 ))}
               </div>
             </Form.Group>
+            {/* Health Label Ends here */}
+            <Button variant="success" type="submit">
+              Submit
+            </Button>
           </Form>
         </div>
+
         <div>
-          <button onClick={() => setModalIsOepn(false)}>Close</button>
+          <button onClick={() => setModalIsOpen(false)}>Close</button>
         </div>
       </Modal>
     </div>
