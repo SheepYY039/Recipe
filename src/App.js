@@ -326,6 +326,7 @@ const App = () => {
       setQuery(search);
       setSearch("");
     }
+    setCardsPerPage();
   };
 
   if (isHovered) {
@@ -476,7 +477,7 @@ const App = () => {
                 </div>
               </Form.Group>
             </fieldset>
-            {/* Diet ENds Here */}
+            {/* Diet Ends Here */}
             {/* Health Labels Starts Here */}
             <Form.Group controlId="HealthLabel">
               <Form.Label>Health Labels</Form.Label>

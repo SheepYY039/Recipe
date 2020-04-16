@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^5.5.0",
     "@testing-library/react": "^10.0.2",
     "@testing-library/user-event": "^10.0.2",
+    "material-ui": "^0.20.2",
     "npm-check": "^5.9.2",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
