@@ -4,8 +4,9 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import PopoverStickOnHover from "./PopOver";
+import FormikForm from "./FormikForm";
 
 import "./App.css";
 import style from "./Modal.module.css";
@@ -275,8 +276,6 @@ const App = () => {
       // || use await for data that doesn't come back instantly
       const response = await fetch(
         `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}${searchRange}`
-
-        // `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}`
       );
       const data = await response.json();
       setRecipes(data.hits);
@@ -365,6 +364,8 @@ const App = () => {
         </form>
         <button onClick={() => setModalIsOpen(true)}>Advanced Search</button>
       </div>
+
+      <FormikForm />
 
       <div className="recipes">
         {/* // || .map function used for looping arrays */}
