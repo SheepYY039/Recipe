@@ -365,8 +365,6 @@ const App = () => {
         <button onClick={() => setModalIsOpen(true)}>Advanced Search</button>
       </div>
 
-      <FormikForm />
-
       <div className="recipes">
         {/* // || .map function used for looping arrays */}
         {recipes.map((recipe) => (
@@ -397,6 +395,8 @@ const App = () => {
           <h2>Advanced Search</h2>
         </div>
         <div className="ModalContent">
+          <FormikForm />
+
           <Form onSubmit={getAdvancedSearch} className="advanced-search-form">
             {/* Search Starts Here */}
             <Form.Group controlId="Search">

@@ -147,7 +147,7 @@ const FormikForm = () => {
             {/* Radio Buttons ends here */}
             {/* // || lines up with pets.name */}
             <FieldArray name="pets">
-              {({ arrayHelpers }) => (
+              {(arrayHelpers) => (
                 <div>
                   <Button
                     onClick={() =>
@@ -164,7 +164,7 @@ const FormikForm = () => {
                   {values.pets.map((pet, index) => {
                     const name = `pets.${index}.name`;
                     {
-                      /* if the ket is pet.name, then the textfield will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
+                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
                     }
                     return (
                       <div key={pet.id}>
@@ -177,6 +177,33 @@ const FormikForm = () => {
                           <MenuItem value="cat">Cat</MenuItem>
                           <MenuItem value="dog">dog</MenuItem>
                           <MenuItem value="frog">frog</MenuItem>
+                        </Field>
+                        <Button onClick={() => arrayHelpers.remove(index)}>
+                          x
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </FieldArray>
+
+            <FieldArray name="pets">
+              {(arrayHelpers) => (
+                <div>
+                  {values.pets.map((pet, index) => {
+                    const name = `pets.${index}.name`;
+                    {
+                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
+                    }
+                    return (
+                      <div key={pet.id}>
+                        <Field
+                          name={`pets.${index}.type`}
+                          type="select"
+                          as={Select}
+                        >
+                          <MenuItem value="cat">{pet.name}</MenuItem>
                         </Field>
                         <Button onClick={() => arrayHelpers.remove(index)}>
                           x
