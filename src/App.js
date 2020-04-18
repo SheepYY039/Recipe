@@ -4,9 +4,20 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
-import { Form, Button } from "react-bootstrap";
 import PopoverStickOnHover from "./PopOver";
 import FormikForm from "./FormikForm";
+
+import { Form } from "react-bootstrap";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  Radio,
+  FormControlLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 import "./App.css";
 import style from "./Modal.module.css";
@@ -362,10 +373,8 @@ const App = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </form>
-        <button onClick={() => setModalIsOpen(true)}>Advanced Search</button>
+        <Button onClick={() => setModalIsOpen(true)}>Advanced Search</Button>
       </div>
-
-      <FormikForm />
 
       <div className="recipes">
         {/* // || .map function used for looping arrays */}
@@ -397,6 +406,8 @@ const App = () => {
           <h2>Advanced Search</h2>
         </div>
         <div className="ModalContent">
+          <FormikForm />
+
           <Form onSubmit={getAdvancedSearch} className="advanced-search-form">
             {/* Search Starts Here */}
             <Form.Group controlId="Search">

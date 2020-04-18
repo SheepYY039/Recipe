@@ -88,28 +88,29 @@ const FormikForm = () => {
           handleSubmit,
         }) => (
           <Form>
-            <MyTextField
+            <h3>Search: </h3>
+            {/* // || <MyTextField
               placeholder="Chicken"
               name="search"
               type="input"
               as={TextField}
-            />
-            {/* A simpler way of using text field */}
+            /> */}
+            {/* // ||  A simpler way of using text field */}
             <Field
               placeholder="Chicken"
               name="search"
               type="input"
               as={TextField}
             />
-            {/* with the same name, the text will sync */}
-            <TextField
+            {/* // || with the same name, the text will sync */}
+            {/* // * <TextField
               name="search"
               value={values.search}
               onChange={handleChange}
               onBlur={handleBlur}
-            />
+            /> */}
             {/* Checkbox */}
-            <Field name="isTall" type="checkbox" as={Checkbox}></Field>
+            {/* // * <Field name="isTall" type="checkbox" as={Checkbox}></Field> */}
             {/* multiple checkboxes starts here */}
             <div>Cookies: </div>
             <Field
@@ -147,7 +148,7 @@ const FormikForm = () => {
             {/* Radio Buttons ends here */}
             {/* // || lines up with pets.name */}
             <FieldArray name="pets">
-              {({ arrayHelpers }) => (
+              {(arrayHelpers) => (
                 <div>
                   <Button
                     onClick={() =>
@@ -164,7 +165,7 @@ const FormikForm = () => {
                   {values.pets.map((pet, index) => {
                     const name = `pets.${index}.name`;
                     {
-                      /* if the ket is pet.name, then the textfield will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
+                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
                     }
                     return (
                       <div key={pet.id}>
