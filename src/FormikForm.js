@@ -189,6 +189,33 @@ const FormikForm = () => {
               )}
             </FieldArray>
 
+            <FieldArray name="pets">
+              {(arrayHelpers) => (
+                <div>
+                  {values.pets.map((pet, index) => {
+                    const name = `pets.${index}.name`;
+                    {
+                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
+                    }
+                    return (
+                      <div key={pet.id}>
+                        <Field
+                          name={`pets.${index}.type`}
+                          type="select"
+                          as={Select}
+                        >
+                          <MenuItem value="cat">{pet.name}</MenuItem>
+                        </Field>
+                        <Button onClick={() => arrayHelpers.remove(index)}>
+                          x
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </FieldArray>
+
             {/* Button */}
             <div>
               <Button disabled={isSubmitting} type="submit">
