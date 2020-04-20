@@ -4,10 +4,22 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
-import { Form } from "react-bootstrap";
+
 import PopoverStickOnHover from "./PopOver";
 import FormikForm from "./FormikForm";
 import { Button } from "@material-ui/core";
+
+import { Form } from "react-bootstrap";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  Radio,
+  FormControlLabel,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 import "./App.css";
 import style from "./Modal.module.css";

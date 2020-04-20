@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Select,
   MenuItem,
+  InputLabel,
 } from "@material-ui/core";
 import * as yup from "yup";
 
@@ -21,6 +22,19 @@ const MyRadio = ({ label, ...props }) => {
     //   Label={label}
     //! /> OR
     <FormControlLabel {...field} control={<Radio />} label={label} />
+  );
+};
+
+const MyCheckBox = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    // ! <FormControlLabel
+    //   value={field.value}
+    //   onChange={field.onChange}
+    //   control={<Radio />}
+    //   Label={label}
+    //! /> OR
+    <FormControlLabel {...field} control={<Checkbox />} label={label} />
   );
 };
 
@@ -58,6 +72,55 @@ const FormikForm = () => {
           cookies: [],
           yogurt: "",
           pets: [{ type: "cat", name: "Jarvis", id: "" + Math.random() }],
+          dishTypes: [
+            "Bread",
+            "Cereals",
+            "Condiments and sauces",
+            "Drinks",
+            "Desserts",
+            "Main course",
+            "Pancake",
+            "Preps",
+            "Preserve",
+            "Salad",
+            "Sandwiches",
+            "Side dish",
+            "Soup",
+            "Starter",
+            "Sweets",
+          ],
+          dietLabels: [
+            {
+              name: "Balanced",
+              apiName: "balanced",
+              description: "Protein/Fat/Carb values in 15/35/50 ratio",
+            },
+            {
+              name: "High-Fiber",
+              apiName: "high-fiber",
+              description: "More than 5g fiber per serving",
+            },
+            {
+              name: "High-Protein",
+              apiName: "high-protein",
+              description: "More than 50% of total calories from proteins",
+            },
+            {
+              name: "Low-Carb",
+              apiName: "low-carb",
+              description: "Less than 20% of total calories from carbs",
+            },
+            {
+              name: "Low-Fat",
+              apiName: "low-fat",
+              description: "Less than 15% of total calories from fat",
+            },
+            {
+              name: "Low-Sodium",
+              apiName: "low-sodium",
+              description: "Less than 140mg Na per serving",
+            },
+          ],
         }}
         // || validation using yup
         validationSchema={validationSchema}
@@ -88,62 +151,76 @@ const FormikForm = () => {
           handleSubmit,
         }) => (
           <Form>
-            <MyTextField
+            <h3>Search: </h3>
+            {/* // || <MyTextField
               placeholder="Chicken"
               name="search"
               type="input"
               as={TextField}
-            />
-            {/* A simpler way of using text field */}
+            /> */}
+            {/* // ||  A simpler way of using text field */}
             <Field
               placeholder="Chicken"
               name="search"
               type="input"
               as={TextField}
             />
-            {/* with the same name, the text will sync */}
-            <TextField
+            {/* // || with the same name, the text will sync */}
+            {/* // * <TextField
               name="search"
               value={values.search}
               onChange={handleChange}
               onBlur={handleBlur}
-            />
+            /> */}
             {/* Checkbox */}
-            <Field name="isTall" type="checkbox" as={Checkbox}></Field>
+            {/* // * <Field name="isTall" type="checkbox" as={Checkbox}></Field> */}
             {/* multiple checkboxes starts here */}
-            <div>Cookies: </div>
-            <Field
-              name="cookies"
-              type="checkbox"
-              value="chocolate chip"
-              as={Checkbox}
-            ></Field>
-            <Field
-              name="cookies"
-              type="checkbox"
-              value="snicker doodle"
-              as={Checkbox}
-            ></Field>
-            <Field
-              name="cookies"
-              type="checkbox"
-              value="sugar"
-              as={Checkbox}
-            ></Field>
+            <div>Dish Type: </div>
+            <FieldArray name="Dish Type">
+              {(arrayHelpers) =>
+                values.dishTypes.map((dishType) => {
+                  return (
+                    <MyCheckBox
+                      name="dishType"
+                      type="checkbox"
+                      value={dishType}
+                      as={Checkbox}
+                      label={dishType}
+                    />
+                  );
+                })
+              }
+            </FieldArray>
+
             {/* multiple checkboxes ends here */}
             {/* Radio Button starts here */}
-            <div>Yogurts: </div>
+            <div>Diets: </div>
             {/* // ! <Field name="yogurt" type="radio" value="peach" as={Radio}></Field> OR */}
-            <Field name="yogurt" type="radio" value="peach" as={MyRadio} />
-            <MyRadio name="yogurt" type="radio" value="peach" label="peach" />
-            <Field name="yogurt" type="radio" value="mango" as={Radio}></Field>
-            <Field
+            {/* <Field name="yogurt" type="radio" value="peach" as={MyRadio} /> */}
+            <FieldArray name="Diet">
+              {(arrayHelpers) =>
+                values.dietLabels.map((dietLabel) => {
+                  return (
+                    <MyRadio
+                      name="dietLabel"
+                      type="radio"
+                      value={dietLabel.name}
+                      as={Radio}
+                      label={dietLabel.name}
+                    />
+                  );
+                })
+              }
+            </FieldArray>
+
+            {/* <MyRadio name="yogurt" type="radio" value="peach" label="peach" /> */}
+            {/* <Field name="yogurt" type="radio" value="mango" as={Radio}></Field> */}
+            {/* <Field
               name="yogurt"
               type="radio"
               value="blueberry"
               as={Radio}
-            ></Field>
-
+            ></Field> */}
             {/* Radio Buttons ends here */}
             {/* // || lines up with pets.name */}
             <FieldArray name="pets">
@@ -164,7 +241,7 @@ const FormikForm = () => {
                   {values.pets.map((pet, index) => {
                     const name = `pets.${index}.name`;
                     {
-                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
+                      /* if the key is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
                     }
                     return (
                       <div key={pet.id}>
@@ -187,41 +264,28 @@ const FormikForm = () => {
                 </div>
               )}
             </FieldArray>
+            <Field
+              placeholder="Meal Type"
+              name={"mealType"}
+              type="select"
+              as={Select}
+              displayEmpty
+            >
+              <InputLabel>Meal Type</InputLabel>
 
-            <FieldArray name="pets">
-              {(arrayHelpers) => (
-                <div>
-                  {values.pets.map((pet, index) => {
-                    const name = `pets.${index}.name`;
-                    {
-                      /* if the ket is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
-                    }
-                    return (
-                      <div key={pet.id}>
-                        <Field
-                          name={`pets.${index}.type`}
-                          type="select"
-                          as={Select}
-                        >
-                          <MenuItem value="cat">{pet.name}</MenuItem>
-                        </Field>
-                        <Button onClick={() => arrayHelpers.remove(index)}>
-                          x
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </FieldArray>
-
+              {/* <Select native> */}
+              <MenuItem value="breakfast">Breakfast</MenuItem>
+              <MenuItem value="lunch">Lunch</MenuItem>
+              <MenuItem value="dinner">Dinner</MenuItem>
+              <MenuItem value="snack">Snack</MenuItem>
+              {/* </Select> */}
+            </Field>
             {/* Button */}
             <div>
               <Button disabled={isSubmitting} type="submit">
                 Submit
               </Button>
             </div>
-
             <pre>{JSON.stringify(values, null, 2)}</pre>
             <pre>{JSON.stringify(errors, null, 2)}</pre>
           </Form>
