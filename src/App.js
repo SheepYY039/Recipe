@@ -4,9 +4,10 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import PopoverStickOnHover from "./PopOver";
 import FormikForm from "./FormikForm";
+import { Button } from "@material-ui/core";
 
 import "./App.css";
 import style from "./Modal.module.css";
@@ -362,7 +363,7 @@ const App = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </form>
-        <button onClick={() => setModalIsOpen(true)}>Advanced Search</button>
+        <Button onClick={() => setModalIsOpen(true)}>Advanced Search</Button>
       </div>
 
       <div className="recipes">
