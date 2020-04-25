@@ -1,5 +1,9 @@
 import React from "react";
+import "typeface-roboto";
 import { Formik, Field, Form, useField, FieldArray } from "formik";
+import { green } from "@material-ui/core/colors";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+
 import {
   TextField,
   Button,
@@ -9,36 +13,45 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Slider,
+  Grid,
+  FormControl,
 } from "@material-ui/core";
 import * as yup from "yup";
 
 const MyRadio = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-  return (
-    // ! <FormControlLabel
-    //   value={field.value}
-    //   onChange={field.onChange}
-    //   control={<Radio />}
-    //   Label={label}
-    //! /> OR
-    <FormControlLabel {...field} control={<Radio />} label={label} />
-  );
+  return <FormControlLabel {...field} control={<GreenRadio />} label={label} />;
 };
+const GreenRadio = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
 
 const MyCheckBox = ({ label, ...props }) => {
   const [field, meta] = useField(props);
+
   return (
-    // ! <FormControlLabel
-    //   value={field.value}
-    //   onChange={field.onChange}
-    //   control={<Radio />}
-    //   Label={label}
-    //! /> OR
-    <FormControlLabel {...field} control={<Checkbox />} label={label} />
+    <FormControlLabel {...field} control={<GreenCheckbox />} label={label} />
   );
 };
 
-const MyTextField = ({ placeholder, ...props }) => {
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
+
+const MyTextField = ({ id, label, placeholder, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : "";
   return (
@@ -47,6 +60,11 @@ const MyTextField = ({ placeholder, ...props }) => {
       placeholder={placeholder}
       helperText={errorText}
       error={!!errorText}
+      id="error"
+      label={label}
+      type="search"
+      variant="outlined"
+      fullWidth
     />
     // ! error={!!errorText} casting to boolean, if this string is empty--> false
   );
@@ -62,16 +80,63 @@ const validationSchema = yup.object({
   ),
 });
 
-const FormikForm = () => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    ...theme.typography.button,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+    fontSize: "1.5em",
+  },
+  input: {
+    width: 42,
+  },
+  sliderRoot: {
+    width: "50%",
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 240,
+  },
+}));
+
+function valuetext(value) {
+  return `${value}`;
+}
+
+const FormikForm = ({
+  selectMealTypes,
+  setSelectMealTypes,
+  selectCuisineTypes,
+  setSelectCuisineTypes,
+}) => {
+  const classes = useStyles();
+
+  const [value, setValue] = React.useState(10);
+
+  const handleSliderChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleInputChange = (event) => {
+    setValue(event.target.value === "" ? "" : Number(event.target.value));
+  };
+
+  const handleBlur = () => {
+    if (value < 0) {
+      setValue(0);
+    } else if (value > 50) {
+      setValue(50);
+    }
+  };
+
+  const handleChange = (event) => {
+    setSelectMealTypes(event.target.value);
+  };
   return (
     <div>
       <Formik
         initialValues={{
           search: "",
-          isTall: false,
-          cookies: [],
-          yogurt: "",
-          pets: [{ type: "cat", name: "Jarvis", id: "" + Math.random() }],
           dishTypes: [
             "Bread",
             "Cereals",
@@ -121,19 +186,189 @@ const FormikForm = () => {
               description: "Less than 140mg Na per serving",
             },
           ],
+          cuisineTypes: [
+            "American",
+            "Asian",
+            "British",
+            "Caribbean",
+            "Central Europe",
+            "Chinese",
+            "Eastern Europe",
+            "French",
+            "Indian",
+            "Italian",
+            "Japanese",
+            "Kosher",
+            "Mediterranean",
+            "Mexican",
+            "Middle Eastern",
+            "Nordic",
+            "South American",
+            "South East Asian",
+          ],
+          healthLabels: [
+            {
+              name: "Alcohol-free",
+              apiName: "alcohol-free",
+              description: "No alcohol used or contained",
+            },
+            {
+              name: "Celery-free",
+              apiName: "celery-free",
+              description: "does not contain celery or derivatives",
+            },
+            {
+              name: "Crustacean-free",
+              apiName: "crustacean-free",
+              description:
+                "does not contain crustaceans (shrimp, lobster etc.) or derivatives",
+            },
+            {
+              name: "Dairy",
+              apiName: "dairy-free",
+              description: "No dairy; no lactose",
+            },
+            {
+              name: "Eggs",
+              apiName: "egg-free",
+              description: "No eggs or products containing eggs",
+            },
+            {
+              name: "Fish",
+              apiName: "fish-free",
+              description: "No fish or fish derivatives",
+            },
+            {
+              name: "FODMAP free",
+              apiName: "fodmap-free",
+              description: "Does not contain FODMAP foods",
+            },
+            {
+              name: "Gluten",
+              apiName: "gluten-free",
+              description: "No ingredients containing gluten",
+            },
+            {
+              name: "Keto",
+              apiName: "keto-friendly",
+              description: "Maximum 7 grams of net carbs per serving",
+            },
+            {
+              name: "Kidney friendly",
+              apiName: "kidney-friendly",
+              description:
+                "per serving – phosphorus less than 250 mg AND potassium less than 500 mg AND sodium: less than 500 mg",
+            },
+            {
+              name: "Kosher",
+              apiName: "kosher",
+              description:
+                "contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves",
+            },
+            {
+              name: "Low potassium",
+              apiName: "low-potassium",
+              description: "Less than 150mg per serving",
+            },
+            {
+              name: "Lupine-free",
+              apiName: "lupine-free",
+              description: "does not contain lupine or derivatives",
+            },
+            {
+              name: "Mustard-free",
+              apiName: "mustard-free",
+              description: "does not contain mustard or derivatives",
+            },
+            {
+              name: "n/a",
+              apiName: "low-fat-abs",
+              description: "Less than 3g of fat per serving",
+            },
+            {
+              name: "No oil added",
+              apiName: "No-oil-added",
+              description:
+                "No oil added except to what is contained in the basic ingredients",
+            },
+            {
+              name: "No-sugar",
+              apiName: "low-sugar",
+              description:
+                "No simple sugars – glucose, dextrose, galactose, fructose, sucrose, lactose, maltose",
+            },
+            {
+              name: "Paleo",
+              apiName: "paleo",
+              description:
+                "Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils",
+            },
+            {
+              name: "Peanuts",
+              apiName: "peanut-free",
+              description: "No peanuts or products containing peanuts",
+            },
+            {
+              name: "Pescatarian",
+              apiName: "pecatarian",
+              description:
+                "Does not contain meat or meat based products, can contain dairy and fish",
+            },
+            {
+              name: "Pork-free",
+              apiName: "pork-free",
+              description: "does not contain pork or derivatives",
+            },
+            {
+              name: "Red meat-free",
+              apiName: "red-meat-free",
+              description:
+                "does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.",
+            },
+            {
+              name: "Sesame-free",
+              apiName: "sesame-free",
+              description: "does not contain sesame seed or derivatives",
+            },
+            {
+              name: "Shellfish",
+              apiName: "shellfish-free",
+              description: "No shellfish or shellfish derivatives",
+            },
+            {
+              name: "Soy",
+              apiName: "soy-free",
+              description: "No soy or products containing soy",
+            },
+            {
+              name: "Sugar-conscious",
+              apiName: "sugar-conscious",
+              description: "Less than 4g of sugar per serving",
+            },
+            {
+              name: "Tree Nuts",
+              apiName: "tree-nut-free",
+              description: "No tree nuts or products containing tree nuts",
+            },
+            {
+              name: "Vegan",
+              apiName: "vegan",
+              description: "No meat, poultry, fish, dairy, eggs or honey",
+            },
+            {
+              name: "Vegetarian",
+              apiName: "vegetarian",
+              description: "No meat, poultry, or fish",
+            },
+            {
+              name: "Wheat-free",
+              apiName: "wheat-free",
+              description: "No wheat, can have gluten though",
+            },
+          ],
         }}
         // || validation using yup
         validationSchema={validationSchema}
-        // || validation without using yup
-        // validate={(values) => {
-        //   const errors = {};
-
-        //   if (values.search.includes("bob")) {
-        //     errors.search = "no bob";
-        //   }
-        //   return errors;
-        // }}
-
         onSubmit={(data, { setSubmitting, resetForm }) => {
           setSubmitting(true);
           // *make async call
@@ -142,40 +377,71 @@ const FormikForm = () => {
           resetForm(true);
         }}
       >
-        {({
-          values,
-          errors,
-          isSubmitting,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => (
-          <Form>
-            <h3>Search: </h3>
-            {/* // || <MyTextField
-              placeholder="Chicken"
-              name="search"
-              type="input"
-              as={TextField}
-            /> */}
-            {/* // ||  A simpler way of using text field */}
-            <Field
-              placeholder="Chicken"
-              name="search"
-              type="input"
-              as={TextField}
-            />
-            {/* // || with the same name, the text will sync */}
-            {/* // * <TextField
-              name="search"
-              value={values.search}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            /> */}
-            {/* Checkbox */}
-            {/* // * <Field name="isTall" type="checkbox" as={Checkbox}></Field> */}
+        {({ values, errors, isSubmitting, handleBlur }) => (
+          <Form style={{ margin: "10px", marginLeft: "7%", marginRight: "7%" }}>
+            <div style={{ width: "70%" }}>
+              <div className={classes.root}>{"Search: "}</div>
+              <TextField
+                variant="outlined"
+                id="search"
+                label="Search"
+                type="search"
+                placeholder="Chicken"
+                fullWidth
+              />
+            </div>
+
+            <div className={classes.root}>{"Items per Page: "}</div>
+
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={9}>
+                <Slider
+                  value={typeof value === "number" ? value : 0}
+                  onChange={handleSliderChange}
+                  defaultValue={10}
+                  getAriaValueText={valuetext}
+                  aria-labelledby="item-slider"
+                  valueLabelDisplay="auto"
+                  step={1}
+                  min={10}
+                  max={50}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <TextField
+                  defaultValue="10"
+                  value={value}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  type="number"
+                  inputProps={{
+                    step: 5,
+                    min: 10,
+                    max: 50,
+                    "aria-labelledby": "item-slider",
+                    shrink: true,
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+            <div className={classes.root}>{"Meal Type: "}</div>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="MealTypeLabel">Meal Type</InputLabel>
+              <Select
+                labelId="MealTypeSelectLabel"
+                id="MealTypeSelect"
+                value={selectMealTypes}
+                onChange={handleChange}
+              >
+                <MenuItem value="breakfast">Breakfast</MenuItem>
+                <MenuItem value="lunch">Lunch</MenuItem>
+                <MenuItem value="dinner">Dinner</MenuItem>
+                <MenuItem value="snack">Snack</MenuItem>
+              </Select>
+            </FormControl>
             {/* multiple checkboxes starts here */}
-            <div>Dish Type: </div>
+            <div className={classes.root}>{"Dish Type: "}</div>
             <FieldArray name="Dish Type">
               {(arrayHelpers) =>
                 values.dishTypes.map((dishType) => {
@@ -191,12 +457,27 @@ const FormikForm = () => {
                 })
               }
             </FieldArray>
-
             {/* multiple checkboxes ends here */}
+
+            <div className={classes.root}>{"Cuisine Type: "}</div>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="CuisineTypeLabel">Cuisine Type</InputLabel>
+              <Select
+                labelId="CuisineTypeSelectLabel"
+                id="CuisineTypeSelect"
+                value={selectCuisineTypes}
+                onChange={handleChange}
+              >
+                {(arrayHelpers) =>
+                  values.cuisineTypes.map((cuisineType) => {
+                    return <MenuItem value={cuisineType} label={cuisineType} />;
+                  })
+                }
+              </Select>
+            </FormControl>
+
             {/* Radio Button starts here */}
-            <div>Diets: </div>
-            {/* // ! <Field name="yogurt" type="radio" value="peach" as={Radio}></Field> OR */}
-            {/* <Field name="yogurt" type="radio" value="peach" as={MyRadio} /> */}
+            <div className={classes.root}>{"Diet: "}</div>
             <FieldArray name="Diet">
               {(arrayHelpers) =>
                 values.dietLabels.map((dietLabel) => {
@@ -212,75 +493,8 @@ const FormikForm = () => {
                 })
               }
             </FieldArray>
-
-            {/* <MyRadio name="yogurt" type="radio" value="peach" label="peach" /> */}
-            {/* <Field name="yogurt" type="radio" value="mango" as={Radio}></Field> */}
-            {/* <Field
-              name="yogurt"
-              type="radio"
-              value="blueberry"
-              as={Radio}
-            ></Field> */}
             {/* Radio Buttons ends here */}
-            {/* // || lines up with pets.name */}
-            <FieldArray name="pets">
-              {(arrayHelpers) => (
-                <div>
-                  <Button
-                    onClick={() =>
-                      arrayHelpers.push({
-                        type: "frog",
-                        name: "",
-                        // ! empty string to cast Math.random() into a string
-                        id: "" + Math.random(),
-                      })
-                    }
-                  >
-                    add Pet
-                  </Button>
-                  {values.pets.map((pet, index) => {
-                    const name = `pets.${index}.name`;
-                    {
-                      /* if the key is pet.name, then the text field will loose focus whenever someone types a letter so instead, use an auto generated id from Math.random */
-                    }
-                    return (
-                      <div key={pet.id}>
-                        <MyTextField placeholder="pet name" name={name} />
-                        <Field
-                          name={`pets.${index}.type`}
-                          type="select"
-                          as={Select}
-                        >
-                          <MenuItem value="cat">Cat</MenuItem>
-                          <MenuItem value="dog">dog</MenuItem>
-                          <MenuItem value="frog">frog</MenuItem>
-                        </Field>
-                        <Button onClick={() => arrayHelpers.remove(index)}>
-                          x
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </FieldArray>
-            <Field
-              placeholder="Meal Type"
-              name={"mealType"}
-              type="select"
-              as={Select}
-              displayEmpty
-            >
-              <InputLabel>Meal Type</InputLabel>
 
-              {/* <Select native> */}
-              <MenuItem value="breakfast">Breakfast</MenuItem>
-              <MenuItem value="lunch">Lunch</MenuItem>
-              <MenuItem value="dinner">Dinner</MenuItem>
-              <MenuItem value="snack">Snack</MenuItem>
-              {/* </Select> */}
-            </Field>
-            {/* Button */}
             <div>
               <Button disabled={isSubmitting} type="submit">
                 Submit
