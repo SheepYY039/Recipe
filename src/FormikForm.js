@@ -9,6 +9,7 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  RadioGroup,
 } from "@material-ui/core";
 import * as yup from "yup";
 
@@ -198,19 +199,21 @@ const FormikForm = () => {
             {/* // ! <Field name="yogurt" type="radio" value="peach" as={Radio}></Field> OR */}
             {/* <Field name="yogurt" type="radio" value="peach" as={MyRadio} /> */}
             <FieldArray name="Diet">
-              {(arrayHelpers) =>
-                values.dietLabels.map((dietLabel) => {
-                  return (
-                    <MyRadio
-                      name="dietLabel"
-                      type="radio"
-                      value={dietLabel.name}
-                      as={Radio}
-                      label={dietLabel.name}
-                    />
-                  );
-                })
-              }
+              <RadioGroup>
+                {(arrayHelpers) =>
+                  values.dietLabels.map((dietLabel) => {
+                    return (
+                      <MyRadio
+                        name="dietLabel"
+                        type="radio"
+                        value={dietLabel.name}
+                        as={Radio}
+                        label={dietLabel.name}
+                      />
+                    );
+                  })
+                }
+              </RadioGroup>
             </FieldArray>
 
             {/* <MyRadio name="yogurt" type="radio" value="peach" label="peach" /> */}
