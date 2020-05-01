@@ -3,6 +3,7 @@ import "typeface-roboto";
 import { Formik, Field, Form, useField, FieldArray } from "formik";
 import { green } from "@material-ui/core/colors";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import {
   TextField,
@@ -16,6 +17,8 @@ import {
   Slider,
   Grid,
   FormControl,
+  Popover,
+  FormGroup,
 } from "@material-ui/core";
 import * as yup from "yup";
 
@@ -37,7 +40,12 @@ const MyCheckBox = ({ label, ...props }) => {
   const [field, meta] = useField(props);
 
   return (
-    <FormControlLabel {...field} control={<GreenCheckbox />} label={label} />
+    <FormControlLabel
+      {...field}
+      {...props}
+      control={<GreenCheckbox />}
+      label={label}
+    />
   );
 };
 
@@ -97,6 +105,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 240,
   },
+  popover: {
+    pointerEvents: "none",
+  },
+  paper: {
+    padding: theme.spacing(1),
+  },
 }));
 
 function valuetext(value) {
@@ -112,6 +126,17 @@ const FormikForm = ({
   const classes = useStyles();
 
   const [value, setValue] = React.useState(10);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const open = Boolean(anchorEl);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
@@ -419,6 +444,8 @@ const FormikForm = ({
                     min: 10,
                     max: 50,
                     "aria-labelledby": "item-slider",
+                  }}
+                  InputLabelProps={{
                     shrink: true,
                   }}
                 />
@@ -447,6 +474,7 @@ const FormikForm = ({
                 values.dishTypes.map((dishType) => {
                   return (
                     <MyCheckBox
+                      key={dishType}
                       name="dishType"
                       type="checkbox"
                       value={dishType}
@@ -460,21 +488,22 @@ const FormikForm = ({
             {/* multiple checkboxes ends here */}
 
             <div className={classes.root}>{"Cuisine Type: "}</div>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="CuisineTypeLabel">Cuisine Type</InputLabel>
-              <Select
-                labelId="CuisineTypeSelectLabel"
-                id="CuisineTypeSelect"
-                value={selectCuisineTypes}
-                onChange={handleChange}
-              >
-                {(arrayHelpers) =>
-                  values.cuisineTypes.map((cuisineType) => {
-                    return <MenuItem value={cuisineType} label={cuisineType} />;
-                  })
-                }
-              </Select>
-            </FormControl>
+            <FieldArray name="CuisineTypes">
+              {(arrayHelpers) =>
+                values.cuisineTypes.map((cuisineType) => {
+                  return (
+                    <MyRadio
+                      key={cuisineType}
+                      name="cuisineType"
+                      type="radio"
+                      value={cuisineType}
+                      as={Radio}
+                      label={cuisineType}
+                    />
+                  );
+                })
+              }
+            </FieldArray>
 
             {/* Radio Button starts here */}
             <div className={classes.root}>{"Diet: "}</div>
@@ -483,9 +512,10 @@ const FormikForm = ({
                 values.dietLabels.map((dietLabel) => {
                   return (
                     <MyRadio
+                      key={dietLabel.apiName}
                       name="dietLabel"
                       type="radio"
-                      value={dietLabel.name}
+                      value={dietLabel.apiName}
                       as={Radio}
                       label={dietLabel.name}
                     />
@@ -494,6 +524,56 @@ const FormikForm = ({
               }
             </FieldArray>
             {/* Radio Buttons ends here */}
+
+            <div className={classes.root}>{"Health Label: "}</div>
+            <FieldArray row>
+              {(arrayHelpers) =>
+                values.healthLabels.map((healthLabel) => {
+                  return (
+                    <div key={healthLabel.apiName}>
+                      <MyCheckBox
+                        name="healthLabel"
+                        type="checkbox"
+                        value={healthLabel.apiName}
+                        as={Checkbox}
+                        label={healthLabel.name}
+                        onMouseEnter={handlePopoverOpen}
+                        onMouseLeave={handlePopoverClose}
+                        aria
+                        inputProps={{
+                          "aria-owns": `${
+                            open ? `${healthLabel.apiName}` : undefined
+                          }`,
+                          "aria-haspopup": "true",
+                        }}
+                      />
+
+                      <Popover
+                        id={healthLabel.apiName}
+                        className={classes.popover}
+                        classes={{
+                          paper: classes.paper,
+                        }}
+                        open={open}
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                        onClose={handlePopoverClose}
+                        disableRestoreFocus
+                      >
+                        <Typography>{healthLabel.description}</Typography>
+                      </Popover>
+                    </div>
+                  );
+                })
+              }
+            </FieldArray>
 
             <div>
               <Button disabled={isSubmitting} type="submit">
