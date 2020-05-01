@@ -4,23 +4,14 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
+
 import PopoverStickOnHover from "./PopOver";
 import FormikForm from "./FormikForm";
 
 import { Form } from "react-bootstrap";
-import {
-  TextField,
-  Button,
-  Checkbox,
-  Radio,
-  FormControlLabel,
-  Select,
-  MenuItem,
-} from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+import { Button } from "@material-ui/core";
 
 import "./App.css";
-import style from "./Modal.module.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +24,7 @@ const App = () => {
 
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState("");
+  const [advancedSearch, setAdvancedSearch] = useState("");
   const [query, setQuery] = useState("chicken");
   const [isHovered, setIsHovered] = useState(false);
   const [cards, setCards] = useState([]);
@@ -40,6 +32,12 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectDishTypes, setSelectDishTypes] = useState("");
+  const [selectCuisineTypes, setSelectCuisineTypes] = useState("");
+  const [selectDietLabels, setSelectDietLabels] = useState("");
+  const [selectHealthLabels, setSelectHealthLabels] = useState("");
+  const [selectMealTypes, setSelectMealTypes] = useState("");
+  // const [selectMealTypes, setSelectMealTypes] = useState("");
 
   let indexOfFirstCard = 0;
   let indexOfLastCard = 10;
@@ -297,10 +295,7 @@ const App = () => {
     getRecipes();
   }, [query, searchRange]);
 
-  console.log(cards);
-
   const totalCards = 100;
-  console.log(totalCards);
 
   //change page
   const paginate = (pageNumber) => {
@@ -320,6 +315,9 @@ const App = () => {
   const updateSearch = (e) => {
     setSearch(e.target.value);
   };
+  const updateAdvancedSearch = (e) => {
+    setAdvancedSearch(e.target.value);
+  };
 
   const getSearch = (e) => {
     // || prevent page refresh
@@ -332,11 +330,15 @@ const App = () => {
 
   const getAdvancedSearch = (e) => {
     e.preventDefault();
-    if (!(search === "" || search === " ")) {
-      setQuery(search);
-      setSearch("");
+    if (!(advancedSearch === "" || advancedSearch === " ")) {
+      setQuery(advancedSearch);
+      setAdvancedSearch("");
+      setModalIsOpen(false);
     }
-    setCardsPerPage();
+
+    if (cardsPerPage !== 10) {
+      setCardsPerPage(cardsPerPage);
+    }
   };
 
   if (isHovered) {
@@ -400,24 +402,41 @@ const App = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
-        style={{ overlay: { backgroundColor: "rgba(0,0,0,0.7)" } }}
+        style={{
+          overlay: { backgroundColor: "rgba(0,0,0,0.7)" },
+        }}
       >
-        <div className="ModalHeader" style={{ display: "flex" }}>
+        <div
+          className="ModalHeader"
+          style={{ display: "flex", marginLeft: "7%" }}
+        >
           <h2>Advanced Search</h2>
         </div>
-        <div className="ModalContent">
-          <FormikForm />
 
+        <div className="ModalContent">
+          <FormikForm
+            selectMealTypes={selectMealTypes}
+            setSelectMealTypes={setSelectMealTypes}
+            selectCuisineTypes={selectCuisineTypes}
+            setSelectCuisineTypes={setSelectCuisineTypes}
+          />
+          {/* // TODO Change to Formik and MUI for better UI */}
           <Form onSubmit={getAdvancedSearch} className="advanced-search-form">
             {/* Search Starts Here */}
             <Form.Group controlId="Search">
               <Form.Label>Search: </Form.Label>
-              <Form.Control type="text" placeholder="Chicken" />
+              <Form.Control
+                type="text"
+                placeholder="Chicken"
+                value={advancedSearch}
+                onChange={updateAdvancedSearch}
+              />
             </Form.Group>
             {/* Search Ends Here */}
             {/* No. of Items Starts Here */}
             <Form.Group controlId="NoOfItems">
               <Form.Label>Number of Items Per Page</Form.Label>
+              {/* <Form.Control value={cardsPerPage} as="select"> */}
               <Form.Control as="select">
                 <option>10</option>
                 <option>15</option>
@@ -430,6 +449,7 @@ const App = () => {
             {/* Meal Type Starts Here */}
             <Form.Group controlId="MealType">
               <Form.Label>Meal Type: </Form.Label>
+              {/* <Form.Control as="select" value={selectMealTypes}> */}
               <Form.Control as="select">
                 <option>Breakfast</option>
                 <option>Lunch</option>
@@ -439,6 +459,7 @@ const App = () => {
             </Form.Group>
             <Form.Group controlId="DishType">
               <Form.Label>Dish Type</Form.Label>
+              {/* <Form.Control value={selectDishTypes}> */}
               <div className="mb-3">
                 {dishTypes.map((dishType, index) => (
                   <div style={{ display: "inline-flex" }}>
@@ -451,11 +472,13 @@ const App = () => {
                   </div>
                 ))}
               </div>
+              {/* </Form.Control> */}
             </Form.Group>
             {/* Meal Type Ends Here */}
             {/* Cuisine Type Starts Here */}
             <Form.Group controlId="CuisineType">
               <Form.Label>Cuisine Types</Form.Label>
+              {/* <Form.Control as="select" value={selectCuisineTypes}> */}
               <Form.Control as="select">
                 {cuisineTypes.map((cuisineType) => (
                   <option>{cuisineType}</option>
@@ -467,6 +490,7 @@ const App = () => {
             <fieldset>
               <Form.Group controlId="Diet">
                 <Form.Label>Diet</Form.Label>
+                {/* <Form.Control value={selectDietLabels}> */}
                 <div className="mb-3">
                   {dietLabels.map((dietLabel, index) => (
                     <PopoverStickOnHover
@@ -487,12 +511,14 @@ const App = () => {
                     </PopoverStickOnHover>
                   ))}
                 </div>
+                {/* </Form.Control> */}
               </Form.Group>
             </fieldset>
             {/* Diet Ends Here */}
             {/* Health Labels Starts Here */}
             <Form.Group controlId="HealthLabel">
               <Form.Label>Health Labels</Form.Label>
+              {/* <Form.Control value={selectHealthLabels}> */}
               <div className="mb-3">
                 {healthLabels.map((healthLabel, index) => (
                   <PopoverStickOnHover
@@ -512,14 +538,18 @@ const App = () => {
                   </PopoverStickOnHover>
                 ))}
               </div>
+              {/* </Form.Control> */}
             </Form.Group>
             {/* Health Label Ends here */}
-            <Button variant="success" type="submit">
+            <Button
+              variant="success"
+              type="submit"
+              onSubmit={() => setModalIsOpen(false)}
+            >
               Submit
             </Button>
           </Form>
         </div>
-
         <div>
           <button onClick={() => setModalIsOpen(false)}>Close</button>
         </div>
