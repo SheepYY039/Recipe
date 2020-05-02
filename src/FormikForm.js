@@ -14,19 +14,25 @@ import {
   Select,
   MenuItem,
   InputLabel,
-
   Slider,
   Grid,
   FormControl,
   Popover,
   FormGroup,
-
+  RadioGroup,
 } from "@material-ui/core";
 import * as yup from "yup";
 
 const MyRadio = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-  return <FormControlLabel {...field} control={<GreenRadio />} label={label} />;
+  return (
+    <FormControlLabel
+      {...props}
+      {...field}
+      control={<GreenRadio />}
+      label={label}
+    />
+  );
 };
 const GreenRadio = withStyles({
   root: {
@@ -124,6 +130,8 @@ const FormikForm = ({
   setSelectMealTypes,
   selectCuisineTypes,
   setSelectCuisineTypes,
+  getAdvancedSearch,
+  setModalIsOpen,
 }) => {
   const classes = useStyles();
 
@@ -396,6 +404,7 @@ const FormikForm = ({
         }}
         // || validation using yup
         validationSchema={validationSchema}
+        onSubmit={() => getAdvancedSearch()}
         onSubmit={(data, { setSubmitting, resetForm }) => {
           setSubmitting(true);
           // *make async call
@@ -403,6 +412,7 @@ const FormikForm = ({
           setSubmitting(false);
           resetForm(true);
         }}
+        className="advanced-search-form"
       >
         {({ values, errors, isSubmitting, handleBlur }) => (
           <Form style={{ margin: "10px", marginLeft: "7%", marginRight: "7%" }}>
@@ -454,21 +464,40 @@ const FormikForm = ({
               </Grid>
             </Grid>
 
+            {/* Radio Button starts here */}
             <div className={classes.root}>{"Meal Type: "}</div>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="MealTypeLabel">Meal Type</InputLabel>
-              <Select
-                labelId="MealTypeSelectLabel"
-                id="MealTypeSelect"
-                value={selectMealTypes}
-                onChange={handleChange}
-              >
-                <MenuItem value="breakfast">Breakfast</MenuItem>
-                <MenuItem value="lunch">Lunch</MenuItem>
-                <MenuItem value="dinner">Dinner</MenuItem>
-                <MenuItem value="snack">Snack</MenuItem>
-              </Select>
-            </FormControl>
+            <RadioGroup row>
+              <MyRadio
+                name="MealType"
+                type="radio"
+                value="Breakfast"
+                as={Radio}
+                label="Breakfast"
+              />
+              <MyRadio
+                name="MealType"
+                type="radio"
+                value="Lunch"
+                as={Radio}
+                label="Lunch"
+              />
+              <MyRadio
+                name="MealType"
+                type="radio"
+                value="Dinner"
+                as={Radio}
+                label="Dinner"
+              />
+              <MyRadio
+                name="MealType"
+                type="radio"
+                value="Snack"
+                as={Radio}
+                label="Snack"
+              />
+            </RadioGroup>
+
+            {/* Radio Buttons ends here */}
             {/* multiple checkboxes starts here */}
             <div className={classes.root}>{"Dish Type: "}</div>
             <FieldArray name="Dish Type">
@@ -510,28 +539,10 @@ const FormikForm = ({
             {/* Radio Button starts here */}
             <div className={classes.root}>{"Diet: "}</div>
             <FieldArray name="Diet">
-<<<<<<< HEAD
-              <RadioGroup>
-                {(arrayHelpers) =>
-                  values.dietLabels.map((dietLabel) => {
-                    return (
-                      <MyRadio
-                        name="dietLabel"
-                        type="radio"
-                        value={dietLabel.name}
-                        as={Radio}
-                        label={dietLabel.name}
-                      />
-                    );
-                  })
-                }
-              </RadioGroup>
-=======
               {(arrayHelpers) =>
                 values.dietLabels.map((dietLabel) => {
                   return (
                     <MyRadio
-                      key={dietLabel.apiName}
                       name="dietLabel"
                       type="radio"
                       value={dietLabel.apiName}
@@ -541,62 +552,32 @@ const FormikForm = ({
                   );
                 })
               }
->>>>>>> f8d19106ad8e4792771896d14f2562e7a75eb0ee
             </FieldArray>
             {/* Radio Buttons ends here */}
 
-            <div className={classes.root}>{"Health Label: "}</div>
-            <FieldArray row>
+            <div className={classes.root}>{"Health: "}</div>
+            <FieldArray row name="Health">
               {(arrayHelpers) =>
                 values.healthLabels.map((healthLabel) => {
                   return (
-                    <div key={healthLabel.apiName}>
-                      <MyCheckBox
-                        name="healthLabel"
-                        type="checkbox"
-                        value={healthLabel.apiName}
-                        as={Checkbox}
-                        label={healthLabel.name}
-                        onMouseEnter={handlePopoverOpen}
-                        onMouseLeave={handlePopoverClose}
-                        aria
-                        inputProps={{
-                          "aria-owns": `${
-                            open ? `${healthLabel.apiName}` : undefined
-                          }`,
-                          "aria-haspopup": "true",
-                        }}
-                      />
-
-                      <Popover
-                        id={healthLabel.apiName}
-                        className={classes.popover}
-                        classes={{
-                          paper: classes.paper,
-                        }}
-                        open={open}
-                        anchorEl={anchorEl}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        onClose={handlePopoverClose}
-                        disableRestoreFocus
-                      >
-                        <Typography>{healthLabel.description}</Typography>
-                      </Popover>
-                    </div>
+                    <MyCheckBox
+                      name="healthLabel"
+                      type="checkbox"
+                      value={healthLabel.apiName}
+                      as={Checkbox}
+                      label={healthLabel.name}
+                    />
                   );
                 })
               }
             </FieldArray>
 
             <div>
-              <Button disabled={isSubmitting} type="submit">
+              <Button
+                disabled={isSubmitting}
+                type="submit"
+                onSubmit={() => setModalIsOpen(false)}
+              >
                 Submit
               </Button>
             </div>

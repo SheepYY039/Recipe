@@ -4,19 +4,123 @@ import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
 import Modal from "react-modal";
+import "typeface-roboto";
+import { Formik, Field, Form, useField, FieldArray } from "formik";
+import { green } from "@material-ui/core/colors";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 
-import PopoverStickOnHover from "./PopOver";
 import FormikForm from "./FormikForm";
 
-import { Form } from "react-bootstrap";
-import { Button } from "@material-ui/core";
+// import { Form } from "react-bootstrap";
+// import { Button } from "@material-ui/core";
 
 import "./App.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+import {
+  TextField,
+  Button,
+  Checkbox,
+  Radio,
+  FormControlLabel,
+  Select,
+  MenuItem,
+  InputLabel,
+  Slider,
+  Grid,
+  FormControl,
+  Popover,
+  FormGroup,
+  RadioGroup,
+} from "@material-ui/core";
+import * as yup from "yup";
+
 Modal.setAppElement("#root");
+
+const MyRadio = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <FormControlLabel
+      {...props}
+      {...field}
+      control={<GreenRadio />}
+      label={label}
+    />
+  );
+};
+const GreenRadio = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
+
+const MyCheckBox = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+
+  return (
+    <FormControlLabel
+      {...field}
+      {...props}
+      control={<GreenCheckbox />}
+      label={label}
+    />
+  );
+};
+
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
+
+const validationSchema = yup.object({
+  // || passing validation to search using yup
+  search: yup.string().required().max(10),
+  pets: yup.array().of(
+    yup.object({
+      name: yup.string().required(),
+    })
+  ),
+});
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    ...theme.typography.button,
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
+    fontSize: "1.5em",
+  },
+  input: {
+    width: 42,
+  },
+  sliderRoot: {
+    width: "50%",
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 240,
+  },
+  popover: {
+    pointerEvents: "none",
+  },
+  paper: {
+    padding: theme.spacing(1),
+  },
+}));
+
+function valuetext(value) {
+  return `${value}`;
+}
 
 const App = () => {
   const APP_ID = "65eff37b";
@@ -32,251 +136,15 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectDishTypes, setSelectDishTypes] = useState("");
-  const [selectCuisineTypes, setSelectCuisineTypes] = useState("");
-  const [selectDietLabels, setSelectDietLabels] = useState("");
-  const [selectHealthLabels, setSelectHealthLabels] = useState("");
-  const [selectMealTypes, setSelectMealTypes] = useState("");
-  // const [selectMealTypes, setSelectMealTypes] = useState("");
 
   let indexOfFirstCard = 0;
-  let indexOfLastCard = 10;
+  let indexOfLastCard = cardsPerPage;
   let inputClass = "search-bar";
   let buttonClass = "search-button";
 
-  const dishTypes = [
-    "Bread",
-    "Cereals",
-    "Condiments and sauces",
-    "Drinks",
-    "Desserts",
-    "Main course",
-    "Pancake",
-    "Preps",
-    "Preserve",
-    "Salad",
-    "Sandwiches",
-    "Side dish",
-    "Soup",
-    "Starter",
-    "Sweets",
-  ];
-
-  const cuisineTypes = [
-    "American",
-    "Asian",
-    "British",
-    "Caribbean",
-    "Central Europe",
-    "Chinese",
-    "Eastern Europe",
-    "French",
-    "Indian",
-    "Italian",
-    "Japanese",
-    "Kosher",
-    "Mediterranean",
-    "Mexican",
-    "Middle Eastern",
-    "Nordic",
-    "South American",
-    "South East Asian",
-  ];
-
-  const dietLabels = [
-    {
-      name: "Balanced",
-      apiName: "balanced",
-      description: "Protein/Fat/Carb values in 15/35/50 ratio",
-    },
-    {
-      name: "High-Fiber",
-      apiName: "high-fiber",
-      description: "More than 5g fiber per serving",
-    },
-    {
-      name: "High-Protein",
-      apiName: "high-protein",
-      description: "More than 50% of total calories from proteins",
-    },
-    {
-      name: "Low-Carb",
-      apiName: "low-carb",
-      description: "Less than 20% of total calories from carbs",
-    },
-    {
-      name: "Low-Fat",
-      apiName: "low-fat",
-      description: "Less than 15% of total calories from fat",
-    },
-    {
-      name: "Low-Sodium",
-      apiName: "low-sodium",
-      description: "Less than 140mg Na per serving",
-    },
-  ];
-
-  const healthLabels = [
-    {
-      name: "Alcohol-free",
-      apiName: "alcohol-free",
-      description: "No alcohol used or contained",
-    },
-    {
-      name: "Celery-free",
-      apiName: "celery-free",
-      description: "does not contain celery or derivatives",
-    },
-    {
-      name: "Crustacean-free",
-      apiName: "crustacean-free",
-      description:
-        "does not contain crustaceans (shrimp, lobster etc.) or derivatives",
-    },
-    {
-      name: "Dairy",
-      apiName: "dairy-free",
-      description: "No dairy; no lactose",
-    },
-    {
-      name: "Eggs",
-      apiName: "egg-free",
-      description: "No eggs or products containing eggs",
-    },
-    {
-      name: "Fish",
-      apiName: "fish-free",
-      description: "No fish or fish derivatives",
-    },
-    {
-      name: "FODMAP free",
-      apiName: "fodmap-free",
-      description: "Does not contain FODMAP foods",
-    },
-    {
-      name: "Gluten",
-      apiName: "gluten-free",
-      description: "No ingredients containing gluten",
-    },
-    {
-      name: "Keto",
-      apiName: "keto-friendly",
-      description: "Maximum 7 grams of net carbs per serving",
-    },
-    {
-      name: "Kidney friendly",
-      apiName: "kidney-friendly",
-      description:
-        "per serving – phosphorus less than 250 mg AND potassium less than 500 mg AND sodium: less than 500 mg",
-    },
-    {
-      name: "Kosher",
-      apiName: "kosher",
-      description:
-        "contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves",
-    },
-    {
-      name: "Low potassium",
-      apiName: "low-potassium",
-      description: "Less than 150mg per serving",
-    },
-    {
-      name: "Lupine-free",
-      apiName: "lupine-free",
-      description: "does not contain lupine or derivatives",
-    },
-    {
-      name: "Mustard-free",
-      apiName: "mustard-free",
-      description: "does not contain mustard or derivatives",
-    },
-    {
-      name: "n/a",
-      apiName: "low-fat-abs",
-      description: "Less than 3g of fat per serving",
-    },
-    {
-      name: "No oil added",
-      apiName: "No-oil-added",
-      description:
-        "No oil added except to what is contained in the basic ingredients",
-    },
-    {
-      name: "No-sugar",
-      apiName: "low-sugar",
-      description:
-        "No simple sugars – glucose, dextrose, galactose, fructose, sucrose, lactose, maltose",
-    },
-    {
-      name: "Paleo",
-      apiName: "paleo",
-      description:
-        "Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils",
-    },
-    {
-      name: "Peanuts",
-      apiName: "peanut-free",
-      description: "No peanuts or products containing peanuts",
-    },
-    {
-      name: "Pescatarian",
-      apiName: "pecatarian",
-      description:
-        "Does not contain meat or meat based products, can contain dairy and fish",
-    },
-    {
-      name: "Pork-free",
-      apiName: "pork-free",
-      description: "does not contain pork or derivatives",
-    },
-    {
-      name: "Red meat-free",
-      apiName: "red-meat-free",
-      description:
-        "does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.",
-    },
-    {
-      name: "Sesame-free",
-      apiName: "sesame-free",
-      description: "does not contain sesame seed or derivatives",
-    },
-    {
-      name: "Shellfish",
-      apiName: "shellfish-free",
-      description: "No shellfish or shellfish derivatives",
-    },
-    {
-      name: "Soy",
-      apiName: "soy-free",
-      description: "No soy or products containing soy",
-    },
-    {
-      name: "Sugar-conscious",
-      apiName: "sugar-conscious",
-      description: "Less than 4g of sugar per serving",
-    },
-    {
-      name: "Tree Nuts",
-      apiName: "tree-nut-free",
-      description: "No tree nuts or products containing tree nuts",
-    },
-    {
-      name: "Vegan",
-      apiName: "vegan",
-      description: "No meat, poultry, fish, dairy, eggs or honey",
-    },
-    {
-      name: "Vegetarian",
-      apiName: "vegetarian",
-      description: "No meat, poultry, or fish",
-    },
-    {
-      name: "Wheat-free",
-      apiName: "wheat-free",
-      description: "No wheat, can have gluten though",
-    },
-  ];
-  const [searchRange, setSearchRange] = useState("&from=0&to=10");
+  const [searchRange, setSearchRange] = useState(
+    `&from=${indexOfFirstCard}&to=${indexOfLastCard}`
+  );
 
   useEffect(() => {
     async function getRecipes() {
@@ -329,7 +197,7 @@ const App = () => {
   };
 
   const getAdvancedSearch = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (!(advancedSearch === "" || advancedSearch === " ")) {
       setQuery(advancedSearch);
       setAdvancedSearch("");
@@ -338,6 +206,7 @@ const App = () => {
 
     if (cardsPerPage !== 10) {
       setCardsPerPage(cardsPerPage);
+      paginate();
     }
   };
 
@@ -348,6 +217,18 @@ const App = () => {
     inputClass = "search-bar";
     buttonClass = "search-button";
   }
+
+  const classes = useStyles();
+
+  const handleSliderChange = (event, newValue) => {
+    setCardsPerPage(newValue);
+  };
+
+  const handleInputChange = (event) => {
+    setCardsPerPage(
+      event.target.value === "" ? "" : Number(event.target.value)
+    );
+  };
 
   return (
     <div className="App">
@@ -414,144 +295,430 @@ const App = () => {
         </div>
 
         <div className="ModalContent">
-          <FormikForm
-            selectMealTypes={selectMealTypes}
-            setSelectMealTypes={setSelectMealTypes}
-            selectCuisineTypes={selectCuisineTypes}
-            setSelectCuisineTypes={setSelectCuisineTypes}
-          />
-          {/* // TODO Change to Formik and MUI for better UI */}
-          <Form onSubmit={getAdvancedSearch} className="advanced-search-form">
-            {/* Search Starts Here */}
-            <Form.Group controlId="Search">
-              <Form.Label>Search: </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Chicken"
-                value={advancedSearch}
-                onChange={updateAdvancedSearch}
-              />
-            </Form.Group>
-            {/* Search Ends Here */}
-            {/* No. of Items Starts Here */}
-            <Form.Group controlId="NoOfItems">
-              <Form.Label>Number of Items Per Page</Form.Label>
-              {/* <Form.Control value={cardsPerPage} as="select"> */}
-              <Form.Control as="select">
-                <option>10</option>
-                <option>15</option>
-                <option>20</option>
-                <option>25</option>
-                <option>30</option>
-              </Form.Control>
-            </Form.Group>
-            {/* No. of Items Ends Here */}
-            {/* Meal Type Starts Here */}
-            <Form.Group controlId="MealType">
-              <Form.Label>Meal Type: </Form.Label>
-              {/* <Form.Control as="select" value={selectMealTypes}> */}
-              <Form.Control as="select">
-                <option>Breakfast</option>
-                <option>Lunch</option>
-                <option>Dinner</option>
-                <option>Snack</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="DishType">
-              <Form.Label>Dish Type</Form.Label>
-              {/* <Form.Control value={selectDishTypes}> */}
-              <div className="mb-3">
-                {dishTypes.map((dishType, index) => (
-                  <div style={{ display: "inline-flex" }}>
-                    <Form.Check
-                      inline
-                      label={`${dishType} `}
-                      type="checkbox"
-                      id={`inline-${dishType}-${index}`}
-                    />
-                  </div>
-                ))}
-              </div>
-              {/* </Form.Control> */}
-            </Form.Group>
-            {/* Meal Type Ends Here */}
-            {/* Cuisine Type Starts Here */}
-            <Form.Group controlId="CuisineType">
-              <Form.Label>Cuisine Types</Form.Label>
-              {/* <Form.Control as="select" value={selectCuisineTypes}> */}
-              <Form.Control as="select">
-                {cuisineTypes.map((cuisineType) => (
-                  <option>{cuisineType}</option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-            {/* CuisineType Ends Here */}
-            {/* Diet Starts Here */}
-            <fieldset>
-              <Form.Group controlId="Diet">
-                <Form.Label>Diet</Form.Label>
-                {/* <Form.Control value={selectDietLabels}> */}
-                <div className="mb-3">
-                  {dietLabels.map((dietLabel, index) => (
-                    <PopoverStickOnHover
-                      component={<div>{`${dietLabel.description}`}</div>}
-                      placement="top"
-                      onMouseEnter={() => {}}
-                      delay={200}
-                    >
-                      <div style={{ display: "inline-flex" }}>
-                        <Form.Check
-                          inline
-                          label={`${dietLabel.name} `}
-                          type="radio"
-                          name="formHorizontalRadios"
-                          id={`inline-${dietLabel.name}-${index}`}
-                        />
-                      </div>
-                    </PopoverStickOnHover>
-                  ))}
+          <Formik
+            initialValues={{
+              search: "",
+              cardsPerPage: `${cardsPerPage}`,
+              dishTypes: [
+                "Bread",
+                "Cereals",
+                "Condiments and sauces",
+                "Drinks",
+                "Desserts",
+                "Main course",
+                "Pancake",
+                "Preps",
+                "Preserve",
+                "Salad",
+                "Sandwiches",
+                "Side dish",
+                "Soup",
+                "Starter",
+                "Sweets",
+              ],
+              dietLabels: [
+                {
+                  name: "Balanced",
+                  apiName: "balanced",
+                  description: "Protein/Fat/Carb values in 15/35/50 ratio",
+                },
+                {
+                  name: "High-Fiber",
+                  apiName: "high-fiber",
+                  description: "More than 5g fiber per serving",
+                },
+                {
+                  name: "High-Protein",
+                  apiName: "high-protein",
+                  description: "More than 50% of total calories from proteins",
+                },
+                {
+                  name: "Low-Carb",
+                  apiName: "low-carb",
+                  description: "Less than 20% of total calories from carbs",
+                },
+                {
+                  name: "Low-Fat",
+                  apiName: "low-fat",
+                  description: "Less than 15% of total calories from fat",
+                },
+                {
+                  name: "Low-Sodium",
+                  apiName: "low-sodium",
+                  description: "Less than 140mg Na per serving",
+                },
+              ],
+              cuisineTypes: [
+                "American",
+                "Asian",
+                "British",
+                "Caribbean",
+                "Central Europe",
+                "Chinese",
+                "Eastern Europe",
+                "French",
+                "Indian",
+                "Italian",
+                "Japanese",
+                "Kosher",
+                "Mediterranean",
+                "Mexican",
+                "Middle Eastern",
+                "Nordic",
+                "South American",
+                "South East Asian",
+              ],
+              healthLabels: [
+                {
+                  name: "Alcohol-free",
+                  apiName: "alcohol-free",
+                  description: "No alcohol used or contained",
+                },
+                {
+                  name: "Celery-free",
+                  apiName: "celery-free",
+                  description: "does not contain celery or derivatives",
+                },
+                {
+                  name: "Crustacean-free",
+                  apiName: "crustacean-free",
+                  description:
+                    "does not contain crustaceans (shrimp, lobster etc.) or derivatives",
+                },
+                {
+                  name: "Dairy",
+                  apiName: "dairy-free",
+                  description: "No dairy; no lactose",
+                },
+                {
+                  name: "Eggs",
+                  apiName: "egg-free",
+                  description: "No eggs or products containing eggs",
+                },
+                {
+                  name: "Fish",
+                  apiName: "fish-free",
+                  description: "No fish or fish derivatives",
+                },
+                {
+                  name: "FODMAP free",
+                  apiName: "fodmap-free",
+                  description: "Does not contain FODMAP foods",
+                },
+                {
+                  name: "Gluten",
+                  apiName: "gluten-free",
+                  description: "No ingredients containing gluten",
+                },
+                {
+                  name: "Keto",
+                  apiName: "keto-friendly",
+                  description: "Maximum 7 grams of net carbs per serving",
+                },
+                {
+                  name: "Kidney friendly",
+                  apiName: "kidney-friendly",
+                  description:
+                    "per serving – phosphorus less than 250 mg AND potassium less than 500 mg AND sodium: less than 500 mg",
+                },
+                {
+                  name: "Kosher",
+                  apiName: "kosher",
+                  description:
+                    "contains only ingredients allowed by the kosher diet. However it does not guarantee kosher preparation of the ingredients themselves",
+                },
+                {
+                  name: "Low potassium",
+                  apiName: "low-potassium",
+                  description: "Less than 150mg per serving",
+                },
+                {
+                  name: "Lupine-free",
+                  apiName: "lupine-free",
+                  description: "does not contain lupine or derivatives",
+                },
+                {
+                  name: "Mustard-free",
+                  apiName: "mustard-free",
+                  description: "does not contain mustard or derivatives",
+                },
+                {
+                  name: "n/a",
+                  apiName: "low-fat-abs",
+                  description: "Less than 3g of fat per serving",
+                },
+                {
+                  name: "No oil added",
+                  apiName: "No-oil-added",
+                  description:
+                    "No oil added except to what is contained in the basic ingredients",
+                },
+                {
+                  name: "No-sugar",
+                  apiName: "low-sugar",
+                  description:
+                    "No simple sugars – glucose, dextrose, galactose, fructose, sucrose, lactose, maltose",
+                },
+                {
+                  name: "Paleo",
+                  apiName: "paleo",
+                  description:
+                    "Excludes what are perceived to be agricultural products; grains, legumes, dairy products, potatoes, refined salt, refined sugar, and processed oils",
+                },
+                {
+                  name: "Peanuts",
+                  apiName: "peanut-free",
+                  description: "No peanuts or products containing peanuts",
+                },
+                {
+                  name: "Pescatarian",
+                  apiName: "pecatarian",
+                  description:
+                    "Does not contain meat or meat based products, can contain dairy and fish",
+                },
+                {
+                  name: "Pork-free",
+                  apiName: "pork-free",
+                  description: "does not contain pork or derivatives",
+                },
+                {
+                  name: "Red meat-free",
+                  apiName: "red-meat-free",
+                  description:
+                    "does not contain beef, lamb, pork, duck, goose, game, horse, and other types of red meat or products containing red meat.",
+                },
+                {
+                  name: "Sesame-free",
+                  apiName: "sesame-free",
+                  description: "does not contain sesame seed or derivatives",
+                },
+                {
+                  name: "Shellfish",
+                  apiName: "shellfish-free",
+                  description: "No shellfish or shellfish derivatives",
+                },
+                {
+                  name: "Soy",
+                  apiName: "soy-free",
+                  description: "No soy or products containing soy",
+                },
+                {
+                  name: "Sugar-conscious",
+                  apiName: "sugar-conscious",
+                  description: "Less than 4g of sugar per serving",
+                },
+                {
+                  name: "Tree Nuts",
+                  apiName: "tree-nut-free",
+                  description: "No tree nuts or products containing tree nuts",
+                },
+                {
+                  name: "Vegan",
+                  apiName: "vegan",
+                  description: "No meat, poultry, fish, dairy, eggs or honey",
+                },
+                {
+                  name: "Vegetarian",
+                  apiName: "vegetarian",
+                  description: "No meat, poultry, or fish",
+                },
+                {
+                  name: "Wheat-free",
+                  apiName: "wheat-free",
+                  description: "No wheat, can have gluten though",
+                },
+              ],
+            }}
+            // || validation using yup
+            // validationSchema={validationSchema}
+            onSubmit={(data, { setSubmitting, resetForm }) => {
+              setSubmitting(true);
+              // *make async call
+              getAdvancedSearch();
+              console.log("Submit: ", data);
+              setSubmitting(false);
+              resetForm(true);
+            }}
+            className="advanced-search-form"
+          >
+            {({ values, errors, isSubmitting, handleBlur }) => (
+              <Form
+                style={{ margin: "10px", marginLeft: "7%", marginRight: "7%" }}
+              >
+                <div style={{ width: "70%" }}>
+                  <div className={classes.root}>{"Search: "}</div>
+                  <TextField
+                    variant="outlined"
+                    id="search"
+                    label="Search"
+                    type="search"
+                    placeholder="Chicken"
+                    fullWidth
+                    onChange={updateAdvancedSearch}
+                  />
                 </div>
-                {/* </Form.Control> */}
-              </Form.Group>
-            </fieldset>
-            {/* Diet Ends Here */}
-            {/* Health Labels Starts Here */}
-            <Form.Group controlId="HealthLabel">
-              <Form.Label>Health Labels</Form.Label>
-              {/* <Form.Control value={selectHealthLabels}> */}
-              <div className="mb-3">
-                {healthLabels.map((healthLabel, index) => (
-                  <PopoverStickOnHover
-                    component={<div>{`${healthLabel.description}`}</div>}
-                    placement="top"
-                    onMouseEnter={() => {}}
-                    delay={200}
-                  >
-                    <div style={{ display: "inline-flex" }}>
-                      <Form.Check
-                        inline
-                        label={`${healthLabel.name} `}
-                        type="checkbox"
-                        id={`inline-${healthLabel.name}-${index}`}
-                      />
-                    </div>
-                  </PopoverStickOnHover>
-                ))}
-              </div>
-              {/* </Form.Control> */}
-            </Form.Group>
-            {/* Health Label Ends here */}
-            <Button
-              variant="success"
-              type="submit"
-              onSubmit={() => setModalIsOpen(false)}
-            >
-              Submit
-            </Button>
-          </Form>
+
+                <div className={classes.root}>{"Items per Page: "}</div>
+
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={9}>
+                    <Slider
+                      name="cardsPerPage"
+                      value={
+                        typeof cardsPerPage === "number" ? cardsPerPage : 0
+                      }
+                      onChange={handleSliderChange}
+                      // defaultValue={cardsPerPage}
+                      getAriaValueText={valuetext}
+                      aria-labelledby="item-slider"
+                      valueLabelDisplay="auto"
+                      step={1}
+                      min={10}
+                      max={50}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      // defaultValue={cardsPerPage}
+                      name="cardsPerPage"
+                      value={cardsPerPage}
+                      onChange={handleInputChange}
+                      onBlur={handleBlur}
+                      type="number"
+                      inputProps={{
+                        step: 1,
+                        min: 10,
+                        max: 50,
+                        "aria-labelledby": "item-slider",
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+
+                {/* Radio Button starts here */}
+                <div className={classes.root}>{"Meal Type: "}</div>
+                <RadioGroup row>
+                  <MyRadio
+                    name="MealType"
+                    type="radio"
+                    value="Breakfast"
+                    as={Radio}
+                    label="Breakfast"
+                  />
+                  <MyRadio
+                    name="MealType"
+                    type="radio"
+                    value="Lunch"
+                    as={Radio}
+                    label="Lunch"
+                  />
+                  <MyRadio
+                    name="MealType"
+                    type="radio"
+                    value="Dinner"
+                    as={Radio}
+                    label="Dinner"
+                  />
+                  <MyRadio
+                    name="MealType"
+                    type="radio"
+                    value="Snack"
+                    as={Radio}
+                    label="Snack"
+                  />
+                </RadioGroup>
+
+                {/* Radio Buttons ends here */}
+                {/* multiple checkboxes starts here */}
+                <div className={classes.root}>{"Dish Type: "}</div>
+                <FieldArray name="Dish Type">
+                  {(arrayHelpers) =>
+                    values.dishTypes.map((dishType) => {
+                      return (
+                        <MyCheckBox
+                          key={dishType}
+                          name="dishType"
+                          type="checkbox"
+                          value={dishType}
+                          as={Checkbox}
+                          label={dishType}
+                        />
+                      );
+                    })
+                  }
+                </FieldArray>
+                {/* multiple checkboxes ends here */}
+
+                <div className={classes.root}>{"Cuisine Type: "}</div>
+                <FieldArray name="CuisineTypes">
+                  {(arrayHelpers) =>
+                    values.cuisineTypes.map((cuisineType) => {
+                      return (
+                        <MyRadio
+                          key={cuisineType}
+                          name="cuisineType"
+                          type="radio"
+                          value={cuisineType}
+                          as={Radio}
+                          label={cuisineType}
+                        />
+                      );
+                    })
+                  }
+                </FieldArray>
+
+                {/* Radio Button starts here */}
+                <div className={classes.root}>{"Diet: "}</div>
+                <FieldArray name="Diet">
+                  {(arrayHelpers) =>
+                    values.dietLabels.map((dietLabel) => {
+                      return (
+                        <MyRadio
+                          name="dietLabel"
+                          type="radio"
+                          value={dietLabel.apiName}
+                          as={Radio}
+                          label={dietLabel.name}
+                        />
+                      );
+                    })
+                  }
+                </FieldArray>
+                {/* Radio Buttons ends here */}
+
+                <div className={classes.root}>{"Health: "}</div>
+                <FieldArray row name="Health">
+                  {(arrayHelpers) =>
+                    values.healthLabels.map((healthLabel) => {
+                      return (
+                        <MyCheckBox
+                          name="healthLabel"
+                          type="checkbox"
+                          value={healthLabel.apiName}
+                          as={Checkbox}
+                          label={healthLabel.name}
+                        />
+                      );
+                    })
+                  }
+                </FieldArray>
+
+                <div>
+                  <Button disabled={isSubmitting} type="submit">
+                    Submit
+                  </Button>
+                </div>
+                <pre>{JSON.stringify(values, null, 2)}</pre>
+                <pre>{JSON.stringify(errors, null, 2)}</pre>
+              </Form>
+            )}
+          </Formik>
         </div>
         <div>
-          <button onClick={() => setModalIsOpen(false)}>Close</button>
+          <Button onClick={() => setModalIsOpen(false)}>Close</Button>
         </div>
       </Modal>
     </div>
