@@ -8,9 +8,10 @@
 }
 
 .recipe {
+  display: block;
   width: 390px;
   min-height: 380px;
-  margin: 20px auto;
+  margin: 20px 15px;
   padding: 10px;
   flex-direction: column;
   flex-wrap: wrap;
