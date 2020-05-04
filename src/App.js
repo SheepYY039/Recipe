@@ -3,21 +3,13 @@ import React, { useEffect, useState } from "react";
 import Recipe from "./Recipe";
 import Nav from "./Nav";
 import PaginationFooter from "./Pagination";
-import Modal from "react-modal";
-import "typeface-roboto";
-import { Formik, Field, Form, useField, FieldArray } from "formik";
-import { green } from "@material-ui/core/colors";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
-
-import FormikForm from "./FormikForm";
-
-// import { Form } from "react-bootstrap";
-// import { Button } from "@material-ui/core";
 
 import "./App.css";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import Modal from "react-modal";
+import * as yup from "yup";
+import { Formik, Form, useField, FieldArray } from "formik";
+import "typeface-roboto";
 
 import {
   TextField,
@@ -25,74 +17,19 @@ import {
   Checkbox,
   Radio,
   FormControlLabel,
-  Select,
-  MenuItem,
-  InputLabel,
   Slider,
   Grid,
-  FormControl,
-  Popover,
-  FormGroup,
   RadioGroup,
 } from "@material-ui/core";
-import * as yup from "yup";
+import { green } from "@material-ui/core/colors";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 Modal.setAppElement("#root");
 
-const MyRadio = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-  return (
-    <FormControlLabel
-      {...props}
-      {...field}
-      control={<GreenRadio />}
-      label={label}
-    />
-  );
-};
-const GreenRadio = withStyles({
-  root: {
-    color: green[400],
-    "&$checked": {
-      color: green[600],
-    },
-  },
-  checked: {},
-})((props) => <Radio color="default" {...props} />);
-
-const MyCheckBox = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
-
-  return (
-    <FormControlLabel
-      {...field}
-      {...props}
-      control={<GreenCheckbox />}
-      label={label}
-    />
-  );
-};
-
-const GreenCheckbox = withStyles({
-  root: {
-    color: green[400],
-    "&$checked": {
-      color: green[600],
-    },
-  },
-  checked: {},
-})((props) => <Checkbox color="default" {...props} />);
-
-const validationSchema = yup.object({
-  // || passing validation to search using yup
-  search: yup.string().required().max(10),
-  pets: yup.array().of(
-    yup.object({
-      name: yup.string().required(),
-    })
-  ),
-});
-
+//use Styles
 const useStyles = makeStyles((theme) => ({
   root: {
     ...theme.typography.button,
@@ -118,6 +55,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//MyRadio
+const MyRadio = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <FormControlLabel
+      {...props}
+      {...field}
+      control={<GreenRadio />}
+      label={label}
+    />
+  );
+};
+
+//Green Radio
+const GreenRadio = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Radio color="default" {...props} />);
+
+//My Checkbox
+const MyCheckBox = ({ label, ...props }) => {
+  const [field, meta] = useField(props);
+
+  return (
+    <FormControlLabel
+      {...field}
+      {...props}
+      control={<GreenCheckbox />}
+      label={label}
+    />
+  );
+};
+
+//Green Checkbox
+const GreenCheckbox = withStyles({
+  root: {
+    color: green[400],
+    "&$checked": {
+      color: green[600],
+    },
+  },
+  checked: {},
+})((props) => <Checkbox color="default" {...props} />);
+
+//Validation Schema
+const validationSchema = yup.object({
+  // || passing validation to search using yup
+  search: yup.string().required().max(10),
+  pets: yup.array().of(
+    yup.object({
+      name: yup.string().required(),
+    })
+  ),
+});
+
+//Slider Value Text sync function
 function valuetext(value) {
   return `${value}`;
 }
@@ -128,7 +126,6 @@ const App = () => {
 
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState("");
-  const [advancedSearch, setAdvancedSearch] = useState("");
   const [query, setQuery] = useState("chicken");
   const [isHovered, setIsHovered] = useState(false);
   const [cards, setCards] = useState([]);
@@ -136,6 +133,7 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [choose, setChoose] = useState("");
 
   let indexOfFirstCard = 0;
   let indexOfLastCard = cardsPerPage;
@@ -146,6 +144,7 @@ const App = () => {
     `&from=${indexOfFirstCard}&to=${indexOfLastCard}`
   );
 
+  //use Effect
   useEffect(() => {
     async function getRecipes() {
       // get current posts
@@ -167,49 +166,45 @@ const App = () => {
 
   //change page
   const paginate = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentPage(pageNumber);
-
-    console.log(currentPage);
     indexOfLastCard = pageNumber * cardsPerPage;
     indexOfFirstCard = indexOfLastCard - cardsPerPage;
-
-    console.log(indexOfLastCard);
-
-    console.log(indexOfFirstCard);
     setSearchRange(`&from=${indexOfFirstCard}&to=${indexOfLastCard}`);
   };
 
+  //updates search query string when typing
   const updateSearch = (e) => {
     setSearch(e.target.value);
-  };
-  const updateAdvancedSearch = (e) => {
-    setAdvancedSearch(e.target.value);
   };
 
   const getSearch = (e) => {
     // || prevent page refresh
     e.preventDefault();
-    if (!(search === "" || search === " ")) {
+    if (search.trim() !== "") {
       setQuery(search);
       setSearch("");
     }
   };
 
   const getAdvancedSearch = (e) => {
-    // e.preventDefault();
-    if (!(advancedSearch === "" || advancedSearch === " ")) {
-      setQuery(advancedSearch);
-      setAdvancedSearch("");
+    if (search.trim() !== "") {
+      setQuery(search);
+      setSearch("");
       setModalIsOpen(false);
     }
 
     if (cardsPerPage !== 10) {
-      setCardsPerPage(cardsPerPage);
-      paginate();
+      indexOfLastCard = currentPage * cardsPerPage;
+      indexOfFirstCard = indexOfLastCard - cardsPerPage;
+      setSearchRange(`&from=${indexOfFirstCard}&to=${indexOfLastCard}`);
+    }
+
+    if (choose !== "") {
+      console.log("advanced:" + choose);
     }
   };
 
+  //search bar hover function
   if (isHovered) {
     inputClass = "search-bar-expand search-bar";
     buttonClass = "search-button search-button-expand";
@@ -220,10 +215,12 @@ const App = () => {
 
   const classes = useStyles();
 
+  //slider change
   const handleSliderChange = (event, newValue) => {
     setCardsPerPage(newValue);
   };
 
+  //input change next to slider
   const handleInputChange = (event) => {
     setCardsPerPage(
       event.target.value === "" ? "" : Number(event.target.value)
@@ -234,11 +231,8 @@ const App = () => {
     <div className="App">
       <Nav />
       <div className="search-box">
-        <p>
-          Showing Results for:
-          <br />
-          <h4>{query}</h4>
-        </p>
+        <p>Showing Results for:</p>
+        <h4 style={{ textTransform: "uppercase" }}>{query}</h4>
         <form
           onSubmit={getSearch}
           className="search-form"
@@ -534,6 +528,9 @@ const App = () => {
             onSubmit={(data, { setSubmitting, resetForm }) => {
               setSubmitting(true);
               // *make async call
+              console.log(data.MealType);
+              setChoose(data);
+              console.log(choose);
               getAdvancedSearch();
               console.log("Submit: ", data);
               setSubmitting(false);
@@ -554,7 +551,7 @@ const App = () => {
                     type="search"
                     placeholder="Chicken"
                     fullWidth
-                    onChange={updateAdvancedSearch}
+                    onChange={updateSearch}
                   />
                 </div>
 
@@ -677,6 +674,7 @@ const App = () => {
                     values.dietLabels.map((dietLabel) => {
                       return (
                         <MyRadio
+                          key={dietLabel.apiName}
                           name="dietLabel"
                           type="radio"
                           value={dietLabel.apiName}
@@ -695,6 +693,7 @@ const App = () => {
                     values.healthLabels.map((healthLabel) => {
                       return (
                         <MyCheckBox
+                          key={healthLabel.apiName}
                           name="healthLabel"
                           type="checkbox"
                           value={healthLabel.apiName}

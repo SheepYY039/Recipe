@@ -33,6 +33,7 @@ const Recipe = ({ title, calories, image, ingredients }) => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  textTransform: "capitalize",
                 }}
               >
                 {title}
@@ -59,7 +60,12 @@ const Recipe = ({ title, calories, image, ingredients }) => {
                 <ol>
                   {ingredients.map((ingredient, i) => {
                     return (
-                      <li key={[i, "-", ingredient]}>{ingredient.text}</li>
+                      <li
+                        style={{ textTransform: "lowercase" }}
+                        key={[i, "-", ingredient]}
+                      >
+                        {ingredient.text}
+                      </li>
                     );
                   })}
                 </ol>
