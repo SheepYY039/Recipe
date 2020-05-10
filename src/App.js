@@ -133,7 +133,6 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsPerPage, setCardsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [choose, setChoose] = useState("");
 
   let indexOfFirstCard = 0;
   let indexOfLastCard = cardsPerPage;
@@ -143,6 +142,7 @@ const App = () => {
   const [searchRange, setSearchRange] = useState(
     `&from=${indexOfFirstCard}&to=${indexOfLastCard}`
   );
+  let choose = "";
 
   //use Effect
   useEffect(() => {
@@ -199,9 +199,7 @@ const App = () => {
       setSearchRange(`&from=${indexOfFirstCard}&to=${indexOfLastCard}`);
     }
 
-    if (choose !== "") {
-      console.log("advanced:" + choose);
-    }
+    console.log("advanced:" + choose);
   };
 
   //search bar hover function
@@ -255,9 +253,9 @@ const App = () => {
 
       <div className="recipes">
         {/* // || .map function used for looping arrays */}
-        {recipes.map((recipe) => (
+        {recipes.map((recipe, count) => (
           <Recipe
-            key={recipe.recipe.label + recipe.recipe.calories}
+            key={recipe.recipe.label + count}
             title={recipe.recipe.label}
             calories={recipe.recipe.calories}
             image={recipe.recipe.image}
@@ -529,7 +527,7 @@ const App = () => {
               setSubmitting(true);
               // *make async call
               console.log(data.MealType);
-              setChoose(data);
+              choose = data;
               console.log(choose);
               getAdvancedSearch();
               console.log("Submit: ", data);
