@@ -14,20 +14,16 @@
 }
 
 .search-form {
-  /* min-height: 10vh; */
   position: absolute;
-  /* left: 50%; */
+
   top: 50%;
   right: 5%;
   transform: translateY(-50%);
 
   height: 40px;
-  /* display: flex; */
-  /* justify-content: center;
-  align-items: center; */
+
   background: #49d290;
   border-radius: 40px;
-  /* padding: 25px; */
 }
 
 .search-form::placeholder {
