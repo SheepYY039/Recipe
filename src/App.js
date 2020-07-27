@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Recipe from "./Recipe/Recipe";
-import Nav from "./nav/Nav";
+import Nav from "./Nav/Nav";
 import PaginationFooter from "./Recipe/Pagination";
 
 import "./App.css";
@@ -56,6 +56,9 @@ const App = () => {
   useEffect(() => {
     async function getRecipes() {
       // get current posts
+      console.log(
+        `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}${searchRange}`
+      );
       setLoading(true);
       // || use await for data that doesn't come back instantly
       const response = await fetch(
@@ -100,20 +103,31 @@ const App = () => {
       setSearch("");
     }
 
+    let tempSearchRange = ``;
+
     if (cardsPerPage !== 10) {
       indexOfLastCard = currentPage * cardsPerPage;
       indexOfFirstCard = indexOfLastCard - cardsPerPage;
-      setSearchRange(
-        searchRange + `&from=${indexOfFirstCard}&to=${indexOfLastCard}`
-      );
+
+      tempSearchRange += `&from=${indexOfFirstCard}&to=${indexOfLastCard}`;
     }
 
-    if (choose.MealType !== "") {
-      console.log(choose.MealType);
-      const mealType = choose.MealType.toLowerCase();
-      setSearchRange(searchRange + `&meal?query=${mealType}`);
+    if (choose.dietLabel !== "") {
+      console.log(choose.dietLabel);
+      const dietLabel = choose.dietLabel;
+      tempSearchRange += `&diet=${dietLabel}`;
       console.log(searchRange);
     }
+
+    if (choose.healthLabel !== "") {
+      console.log(choose.healthLabel);
+      const HealthLabel = choose.healthLabel;
+      for (let index = 0; index < HealthLabel.length; index++) {
+        const element = HealthLabel[index];
+        tempSearchRange += `&health=${element}`;
+      }
+    }
+    setSearchRange(tempSearchRange);
     setModalIsOpen(false);
     console.log(choose);
   };
@@ -368,7 +382,7 @@ const App = () => {
                 </Grid>
 
                 {/* Radio Button starts here */}
-                <div className={classes.root}>{"Meal Type: "}</div>
+                {/* <div className={classes.root}>{"Meal Type: "}</div>
                 <RadioGroup row>
                   <MyRadio
                     name="MealType"
@@ -398,11 +412,11 @@ const App = () => {
                     as={Radio}
                     label="Snack"
                   />
-                </RadioGroup>
+                </RadioGroup> */}
 
                 {/* Radio Buttons ends here */}
                 {/* multiple checkboxes starts here */}
-                <div className={classes.root}>{"Dish Type: "}</div>
+                {/* <div className={classes.root}>{"Dish Type: "}</div>
                 <FieldArray name="Dish Type">
                   {(arrayHelpers) =>
                     values.dishTypes.map((dishType) => {
@@ -418,10 +432,10 @@ const App = () => {
                       );
                     })
                   }
-                </FieldArray>
+                </FieldArray> */}
                 {/* multiple checkboxes ends here */}
 
-                <div className={classes.root}>{"Cuisine Type: "}</div>
+                {/* <div className={classes.root}>{"Cuisine Type: "}</div>
                 <FieldArray name="CuisineTypes">
                   {(arrayHelpers) =>
                     values.cuisineTypes.map((cuisineType) => {
@@ -437,7 +451,7 @@ const App = () => {
                       );
                     })
                   }
-                </FieldArray>
+                </FieldArray> */}
 
                 {/* Radio Button starts here */}
                 <div className={classes.root}>{"Diet: "}</div>
@@ -482,8 +496,8 @@ const App = () => {
                     Submit
                   </Button>
                 </div>
-                <pre>{JSON.stringify(values, null, 2)}</pre>
-                <pre>{JSON.stringify(errors, null, 2)}</pre>
+                {/* <pre>{JSON.stringify(values, null, 2)}</pre> */}
+                {/* <pre>{JSON.stringify(errors, null, 2)}</pre> */}
               </Form>
             )}
           </Formik>
